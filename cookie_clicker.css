@@ -68,6 +68,9 @@ body {
   border: none;
   cursor: pointer;
   transition: transform 0.1s ease;
+  position: relative;
+  z-index: 10;
+  touch-action: manipulation;
 }
 
 #cookie:active {
@@ -407,5 +410,46 @@ body {
   #statsArea, #achievementArea {
     width: 90%;
     max-height: 300px;
+  }
+}
+
+#loadingScreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  overflow-y: auto; /* ✅ scroll if too tall */
+}
+
+#loadingContent ul {
+  padding: 0;
+}
+
+#loadingContent button {
+  background: white;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  z-index: 10;
+}
+
+@media (max-width: 600px) {
+  #loadingScreen {
+    padding: 10px;
+  }
+
+  #loadingContent h1 {
+    font-size: 1.8rem;
+  }
+
+  #loadingContent button {
+    font-size: 1rem;
+    padding: 10px;
   }
 }

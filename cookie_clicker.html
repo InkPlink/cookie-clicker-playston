@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+
+<html>
+    
+<head>
+    <title>Cookie Clicker!</title>
+
+    <link rel="stylesheet" href="cookie_clicker.css">
+</head>
+
+<body>
+
+    <!--Songs and SFX-->
+    
+    <audio id="gameMusic1" src="Cookie Clicker Song.mp3"></audio>
+    <audio id="gameMusic2" src="Cookie Clicker Song 2.mp3"></audio>
+    <audio id="doubleTapSFX" src="doubletap.mp3"></audio>
+    <audio id="upgradeBoughtSFX" src="chaching.mp3"></audio>
+    <audio id="notificationSFX" src="notification.mp3"></audio>
+    <audio id="errorSFX" src="error.mp3"></audio>
+    <audio id="clickSFX" src="Click.mp3"></audio>
+
+    <!--Divs-->
+
+<div id="menuScreen">
+  <div id="loadingScreen">
+    <div id="loadingContent">
+      <div style="font-size: 350px; opacity: 0.25; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; pointer-events: none;">🍪</div>
+      <h1>Cookie Clicker</h1>
+      <p>by Preston C.</p>
+      <ul>
+        <li><button onclick="startGame()">Begin</button></li>
+        <li><button onclick="openSettings()">Settings</button></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div id="settingsScreen" class="popUpInCenter hidden">
+ 
+    <button id="closeSettingsButton" onclick="closeSettings()">❌</button>
+    <h2>Settings⚙️</h2>
+<ul>
+  <li>
+    <label class="switch">
+      <input type="checkbox" id="musicToggle" checked onchange="toggleMusic()">
+      <span class="slider"></span>
+    </label>
+    <span class="switch-label">Music</span>
+  </li>
+
+  <li>
+    <label class="switch">
+      <input type="checkbox" id="sfxToggle" checked onchange="toggleSoundEffects()">
+      <span class="slider"></span>
+    </label>
+    <span class="switch-label">SFX</span>
+  </li>
+</ul>
+
+    </div>
+
+
+<div id="game-layout" style="display: none;">
+<div id="sideButtons">
+    <button id="statsButton" onclick="toggleStats('open')">STATS📊</button>
+    <button id="achievementButton" onclick="toggleAchievements('open')">ACHIEVEMENTS🏆</button>
+    <button id="returnToMenuButton" onclick="reload()">RETURN TO MAIN MENU</button>
+</div>
+
+        <div id="statsArea" class="popUpInCenter hidden">
+            <button id="closeStatsButton" onclick="toggleStats('close')">❌</button>
+            <h2>STATS📊</h2>
+            <ul> <!--General Stats-->
+                <li>Clicks: <span id="cookiesClickedStat">0</span></li>
+                <li>Cookies Gained (All Time): <span id="cookiesGainedStat">0</span></li>
+            </ul>
+            <hr>
+            <ul> <!--Cookies Being Gained Stats-->
+                <li>Cookies Per Click: <span id="cookiesGainedOnClickStat">1</span></li>
+                <li>Cookies Per Second (Passively): <span id="cookiesPassivelyGainedPSStat">0</span></li>
+            </ul>
+            <hr>
+            <ul> <!--Upgrade Stats-->
+                <li>Cookies Spent: <span id="cookiesSpentStat">0</span></li>
+                <li>Upgrades Purchased (Total): <span id="upgradesPurchasedStat">0</span></li>
+                <li>Upgrades Unlocked: <span id="upgradesUnlockedStat">2</span></li>
+            </ul>
+            <hr>
+            <ul> <!--Autoclicker Stats-->
+                <li>Cookies Gained from Clicking: <span id="cookiesGainedClickingStat">0</span></li>
+                <li>Cookies Gained Passively: <span id="cookiesGainedPassivelyStat">0</span></li>
+            </ul>
+        </div>
+        <div id="achievementArea" class="popUpInCenter hidden">
+            <button id="closeAchievementButton" onclick="toggleAchievements('close')">❌</button>
+            <h2>ACHIEVEMENTS🏆</h2>
+            <p>COMING SOON!</p>
+            </div>
+
+<div id="cookieArea">
+  <div class="cookie-wrapper">
+    <button id="cookie" onclick="cookieClicked()">🍪</button>
+    <div id="notificationArea"></div>
+  </div>
+</div>
+
+
+    <div class="scoreWrapper">
+        <h2 id="scoreNumber">0</h2>
+    </div>
+
+    <div id="shopArea">
+        <h2>Upgrade Shop</h2>
+        <ul>
+            <li> <!--+1 Click-->
+                <h3>+1 Click👉🍪</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;">Gain 1 more cookie per click! Stacks!</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="UpgradeOnePrice">Price: 10 Cookies</p>
+                    <p id="upgradeOnePurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeOne" onclick="upgradeBought('one')">BUY</button>
+            </li>
+            <li> <!--Double Tap-->
+                <h3>Double Tap ✌️</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;">Grants a 5% chance to get a click worth double the cookies. It also plays a nice sound when you get it! It can only be purchased once.</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="UpgradeTwoPrice">Price: 50 Cookies</p>
+                    <p id="upgradeTwoPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeTwo" onclick="upgradeBought('two')">BUY</button>
+            </li>
+            <li> <!--Autoclick-->
+                <h3 id="upgradeThreeTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" id= "descriptionThree" style="font-size: medium;">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeThreePrice">Price: ❓❓❓ Cookies</p>
+                    <p id="upgradeThreePurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeThree" style="color: lightgrey" onclick="upgradeBought('three')">🚫</button>
+            </li>
+            <li> <!--Grandma's Help-->
+                <h3 id="upgradeFourTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionFour">❔❔❔❔❔</p>
+                
+                <div class="priceRow">
+                    <p style="color: red" id="upgradeFourPrice">Price: ❓❓❓ Cookies</p>
+                    <p id="upgradeFourPurchasedP">Purchased: 0</p>
+                </div>
+                <button style="color: lightgray;" id="buyButtonUpgradeFour" onclick="upgradeBought('four')">🚫</button>
+            </li>
+            <li id="upgradeFiveContainer" style="display: none;"> <!--Another One!-->
+                <h3 id="upgradeFiveTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionFive">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeFivePrice">Price: ❓❓❓ Cookies</p>
+                    <p id="upgradeFivePurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeFive" onclick="upgradeBought('five')">🚫</button>
+            </li>
+            <li id="upgradeSixContainer" style="display: none;"> <!--Oven Boost-->
+                <h3 id="upgradeSixTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionSix">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeSixPrice">Price: ❓❓❓ Cookies</p>
+                    <p id="upgradeSixPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeSix" onclick="upgradeBought('six')">🚫</button>
+            </li>
+            <li id="upgradeSevenContainer" style="display: none;"> <!--Legal Gambling-->
+                <h3 id="upgradeSevenTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionSeven">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeSevenPrice">Price: ❓❓❓❓ Cookies</p>
+                    <p id="upgradeSevenPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeSeven" onclick="upgradeBought('seven')">🚫</button>
+            </li> 
+            <li id="upgradeEightContainer" style="display: none;"> <!--Super Crunch 💪🍪-->
+                <h3 id="upgradeEightTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionEight">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeEightPrice">Price: ❓❓❓❓ Cookies</p>
+                    <p id="upgradeEightPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeEight" onclick="upgradeBought('eight')">🚫</button>
+            </li>
+            <li id="upgradeNineContainer" style="display: none;"> <!--Mega Oven 🔥🍪-->
+                <h3 id="upgradeNineTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionNine">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeNinePrice">Price: ❓❓❓❓ Cookies</p>
+                    <p id="upgradeNinePurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeNine" onclick="upgradeBought('nine')">🚫</button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<script>
+
+let cookies=0;
+let cookieMultiplier=1;
+let upgradesUnlocked=2;
+let cookiesOnClick;
+let musicStarted = false;
+
+//Math Variables
+let tempNumberOne;
+let tempNumberTwo;
+
+//Stats
+let clicksAllTime = 0;
+let cookiesGainedAllTime = 0;
+let upgradesPurchased = 0;
+let cookiesSpent = 0;
+let cookiesGainedClicking = 0;
+let cookiesGainedPassively = 0;
+
+//Music and Sound Effects
+let musicEnabled = true;
+let soundEffectsEnabled = true;
+let currentTrack = 1;
+const music1 = document.getElementById('gameMusic1');
+const music2 = document.getElementById('gameMusic2');
+
+//Erase Mode
+let eraseMode = false;
+
+//Upgrade One Variables
+let UpgradeOnePriceNumber=10;
+let upgradeOnePurchased=0;
+
+//Upgrade Two Upgrade Activator
+let DoubleTap=false;
+
+//Notification Management
+let hasSeenUpgradeOneNotice = false;
+let hasSeenUpgradeTwoNotice = false;
+let hasSeenUpgradeThreeNotice = false;
+let hasSeenUpgradeFourNotice = false;
+let hasSeenUpgradeFiveNotice = false;
+let hasSeenUpgradeSixNotice = false;
+let hasSeenUpgradeSevenNotice = false;
+let hasSeenUpgradeEightNotice = false;
+let hasSeenUpgradeNineNotice = false;
+
+//Upgrade Three Variables
+let upgradeThreePriceNumber=100
+let upgradeThreePurchased=0;
+
+//Upgrade Four Variables
+let upgradeFourPriceNumber=100;
+let upgradeFourPurchased=0;
+
+//Upgrade Five Variables
+let upgradeFivePriceNumber=250;
+let upgradeFivePurchased=0;
+
+//Upgrade Six Variables
+let upgradeSixPriceNumber=500;
+let upgradeSixPurchased=0;
+
+//Upgrade Seven Variables
+let upgradeSevenPriceNumber = 1000;
+let upgradeSevenPurchased=0;
+
+//Upgrade Eight Variables
+let upgradeEightPriceNumber = 1000;
+let upgradeEightPurchased=0;
+
+//Upgrade Nine Variables
+let upgradeNinePriceNumber = 2000;
+let upgradeNinePurchased=0;
+
+//Autoclicker Management
+let autoCPS=0;
+let autoclickStarted = false;
+
+function startGame(){
+  hideAllScreens();
+  document.getElementById('game-layout').style.display = 'block';
+    if (!musicStarted) {
+        playMusicLooping();
+    }
+    changeCookieCount();
+    statsTextChanger();
+    priceTextColorChangers();
+}
+
+function hideAllScreens() {
+  document.getElementById('menuScreen').style.display = 'none';
+  document.getElementById('settingsScreen').style.display = 'none';
+  document.getElementById('game-layout').style.display = 'none';
+}
+
+function openSettings() {
+  hideAllScreens();
+  document.getElementById('settingsScreen').style.display = 'block';
+}
+
+
+
+function changeCookieCount(){
+document.getElementById('scoreNumber').textContent = cookies.toLocaleString();
+clickSFX();
+    statsTextChanger();
+    priceTextColorChangers()
+}
+
+function returnToMainMenu() {
+  hideAllScreens();
+  document.getElementById('menuScreen').style.display = 'block';
+}
+
+function upgradeBoughtSFXPlay(){
+    if (soundEffectsEnabled){
+    document.getElementById("upgradeBoughtSFX").play();
+    }
+}
+
+function alerts(textToSay){
+    if (textToSay == "notEnough"){
+        alert('Not enough cookies to get this upgrade!');
+    }else if (textToSay == "notUnlocked"){
+        alert('Buy previous upgrade to unlock this upgrade!');
+    }else if (textToSay == "buyOne"){
+        alert('You have bought the max amount of this upgrade!')
+    }
+}
+
+function clickSFX(){
+    if (soundEffectsEnabled){
+        const clickSound = document.getElementById("clickSFX");
+        clickSound.pause();           // stop if it's playing
+        clickSound.currentTime = 0;  // rewind to start
+        clickSound.volume = 1;    // sets volume to max
+        clickSound.play();            // play from beginning
+    }
+}
+
+function doubleTapNoti(){
+    if (soundEffectsEnabled){
+        const dtSound = document.getElementById("doubleTapSFX");
+        dtSound.pause();
+        dtSound.currentTime = 0;
+        dtSound.volume = 1;
+        dtSound.play();
+    }
+        showNotification('Lucky click! Double tap was activated!')
+}
+
+function doubleTap(){
+    if (DoubleTap == true && Math.random() < 0.0256789 ){
+        cookiesOnClick = cookieMultiplier * 2;
+        doubleTapNoti()
+    } else {
+        cookiesOnClick = cookieMultiplier;
+    }
+}
+
+function cookieClicked(){
+    doubleTap()
+    cookies += cookiesOnClick;
+    clicksAllTime += 1;
+    cookiesGainedAllTime += cookiesOnClick;
+    cookiesGainedClicking += cookiesOnClick;
+    statsTextChanger();
+    changeCookieCount();
+}
+
+
+function priceTextColorChangers(){ //Called from the "Change Cookie Count" function
+    //+1 Click
+    if (cookies>=UpgradeOnePriceNumber){
+        document.getElementById('UpgradeOnePrice').style.color = "green";
+        if (hasSeenUpgradeOneNotice == false){
+        notification("You can now afford +1 Click!") 
+        hasSeenUpgradeOneNotice=true; 
+        }
+    }else{
+        document.getElementById('UpgradeOnePrice').style.color = "red";
+        hasSeenUpgradeOneNotice = false;
+    }
+
+    //Double Tap
+    if (DoubleTap == false){
+          if (cookies>=50){
+        document.getElementById('UpgradeTwoPrice').style.color = "green";
+        if (hasSeenUpgradeTwoNotice == false){
+        notification("You can now afford Double Tap!")
+        hasSeenUpgradeTwoNotice=true;
+        }
+    }else if (DoubleTap == false){
+        document.getElementById('UpgradeTwoPrice').style.color = "red";
+        hasSeenUpgradeTwoNotice=false;
+    }  
+    }else{
+        document.getElementById('UpgradeTwoPrice').style.color = "red";
+    }
+
+    //Autoclick
+    if (cookies>=upgradeThreePriceNumber && upgradesUnlocked>=3){
+        document.getElementById('upgradeThreePrice').style.color = "green";
+        if (hasSeenUpgradeThreeNotice == false){
+            notification('You can now afford Autoclick!')
+            hasSeenUpgradeThreeNotice=true;
+        }
+    }else{
+        document.getElementById('upgradeThreePrice').style.color = "red";
+        hasSeenUpgradeThreeNotice=false;
+    }
+
+    //Grandma's Help
+    if (cookies>=upgradeFourPriceNumber && upgradesUnlocked>=3){
+        document.getElementById('upgradeFourPrice').style.color= "green";
+        if (hasSeenUpgradeFourNotice == false){
+            notification('You can now afford Grandmas Help!')
+            hasSeenUpgradeFourNotice = true;
+        }
+    }else{
+        document.getElementById('upgradeFourPrice').style.color= "red";
+        hasSeenUpgradeFourNotice=false;
+    }
+
+    //Another One
+    if (cookies>=upgradeFivePriceNumber && upgradesUnlocked>=5 && upgradeFivePurchased == 0){
+        document.getElementById('upgradeFivePrice').style.color = "green";
+        if (hasSeenUpgradeFiveNotice == false){
+            notification('You can now afford Another One!')
+            hasSeenUpgradeFiveNotice = true;
+        }
+    }else{
+        document.getElementById('upgradeFivePrice').style.color="red";
+        hasSeenUpgradeFiveNotice=false;
+    }
+
+    //Oven Boost
+    if (cookies>=upgradeSixPriceNumber && upgradesUnlocked>=6){
+        document.getElementById('upgradeSixPrice').style.color = "green";
+        if (hasSeenUpgradeSixNotice == false){
+            notification('You can now afford Oven Boost!')
+            hasSeenUpgradeSixNotice = true;
+        }
+    }else{
+        document.getElementById('upgradeSixPrice').style.color = "red";
+        hasSeenUpgradeSixNotice = false;
+    }
+
+    //Legal Gambling
+    if (cookies>=upgradeSevenPriceNumber && upgradesUnlocked>=7){
+        document.getElementById('upgradeSevenPrice').style.color = "green";
+        if (hasSeenUpgradeSevenNotice == false){
+            notification('You can now afford Legal Gambling!')
+            hasSeenUpgradeSevenNotice = true;
+        }
+    }else{
+        document.getElementById('upgradeSevenPrice').style.color = "red";
+        hasSeenUpgradeSevenNotice = false;
+    }
+
+    //Super Crunch
+    if (cookies>=upgradeEightPriceNumber && upgradesUnlocked>=7){
+        document.getElementById('upgradeEightPrice').style.color = "green";
+        if (hasSeenUpgradeEightNotice == false){
+            notification('You can now afford Super Crunch!')
+            hasSeenUpgradeEightNotice = true;
+        }
+    }else{
+        document.getElementById('upgradeEightPrice').style.color = "red";
+        hasSeenUpgradeEightNotice = false;
+    }
+
+    //Mega Oven
+    if (cookies>=upgradeNinePriceNumber && upgradesUnlocked>=7){
+        document.getElementById('upgradeNinePrice').style.color = "green"
+        if (hasSeenUpgradeNineNotice == false){
+            notification('You can now afford Mega Oven!')
+            hasSeenUpgradeNineNotice = true;
+        }
+    }else{
+        document.getElementById('upgradeNinePrice').style.color = "red";
+        hasSeenUpgradeNineNotice = false;
+    }
+}
+
+function showNotification(message) {
+    const note = document.createElement("div");
+    note.className = "notification";
+    note.textContent = message;
+    document.getElementById("notificationArea").appendChild(note);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        note.remove();
+    }, 5000);
+}
+function notification(message){
+
+    if (soundEffectsEnabled){
+        const notifSound = document.getElementById("notificationSFX");
+        notifSound.currentTime = 0;
+        notifSound.play();
+    }
+    showNotification(message)
+}
+
+function error(message){
+    if (soundEffectsEnabled){
+    const errorSound = document.getElementById("errorSFX");
+    errorSound.pause();           // stop if it's playing
+    errorSound.currentTime = 0;  // rewind to start
+    errorSound.volume = 1;    // sets volume to max
+    errorSound.play();            // play from beginning
+    showNotification(message);    // show the visual message
+    }
+
+}
+
+
+function upgradeBought(upgrade){
+
+    if (upgrade == "one"){
+        if (cookies >=UpgradeOnePriceNumber){
+            cookies-=UpgradeOnePriceNumber;
+            cookiesSpent += UpgradeOnePriceNumber;
+            let tempNumberOne = UpgradeOnePriceNumber*.47;
+            UpgradeOnePriceNumber+=tempNumberOne
+            UpgradeOnePriceNumber = Math.ceil(UpgradeOnePriceNumber);
+            cookieMultiplier+=1;
+            upgradeOnePurchased+=1;
+            upgradesPurchased += 1;
+            if (upgradeOnePurchased >=3){
+                unlockGrandmaAuto()
+            }
+            document.getElementById('UpgradeOnePrice').textContent = `Price: ${UpgradeOnePriceNumber.toLocaleString()} Cookies`;     
+            document.getElementById('upgradeOnePurchasedP').textContent = `Purchased: ${upgradeOnePurchased}`
+            showNotification('You have successfully purchased +1 Click!')
+            upgradeBoughtSFXPlay()
+            changeCookieCount()
+        }else{
+            error('You do not have enough cookies to purchase this upgrade!')
+    }
+}else if (upgrade == "two"){
+    if (cookies >=50 && DoubleTap == false){
+        cookies-=50
+         cookiesSpent += 50;
+        DoubleTap = true;
+        document.getElementById('upgradeTwoPurchasedP').textContent = `Purchased: 1`
+        document.getElementById('buyButtonUpgradeTwo').style.color = "darkgrey"
+        showNotification('You have succesfully purchased Double Tap!')
+        upgradesPurchased += 1;
+        unlockGrandmaAuto()
+        upgradeBoughtSFXPlay()
+        changeCookieCount()
+    }else if (DoubleTap == true){
+        error('You can only buy this upgrade once!')
+    }else{
+        error('You do not have enough cookies to purchase this upgrade!')
+    }
+}else if (upgrade == "three"){
+    if (cookies>=upgradeThreePriceNumber && upgradesUnlocked >=3){
+    cookies-=upgradeThreePriceNumber;
+     cookiesSpent += upgradeThreePriceNumber;
+    let tempNumberOne=upgradeThreePriceNumber*.3;
+    upgradeThreePriceNumber+=tempNumberOne
+    upgradeThreePriceNumber=Math.ceil(upgradeThreePriceNumber);
+    upgradeThreePurchased+=1;
+    upgradesPurchased += 1;
+    autoCPS+=1;
+    unlockAnotherOne()
+    document.getElementById('upgradeThreePrice').textContent = `Price: ${upgradeThreePriceNumber.toLocaleString()} Cookies`;
+    document.getElementById('upgradeThreePurchasedP').textContent = `Purchased: ${upgradeThreePurchased}`
+    showNotification('You have successfully purchased Autoclick!')
+    upgradeBoughtSFXPlay()
+    changeCookieCount()
+    autoclick()
+}else if (upgradesUnlocked < 3){
+    error('Purchase the upgrade Double Tap or buy 3 +1 Clicks to unlock this Upgrade!')
+}else{
+    error('You do not have enough cookies to purchase this upgrade!')
+}
+}else if (upgrade == "four"){
+    if (cookies>=upgradeFourPriceNumber && upgradesUnlocked >= 3){
+        cookies-=upgradeFourPriceNumber;
+         cookiesSpent += upgradeFourPriceNumber;
+        upgradeFourPurchased+=1;
+        let tempNumberOne=upgradeFourPriceNumber*.25;
+        upgradeFourPriceNumber+=tempNumberOne;
+        upgradeFourPriceNumber=Math.ceil(upgradeFourPriceNumber);
+        cookieMultiplier+=2;
+        unlockAnotherOne()
+        upgradesPurchased += 1;
+        document.getElementById('upgradeFourPrice').textContent = `Price: ${upgradeFourPriceNumber.toLocaleString()} Cookies`;
+        document.getElementById('upgradeFourPurchasedP').textContent = `Purchased: ${upgradeFourPurchased}`
+        showNotification('You have successfully purchased Grandmas help!')
+        upgradeBoughtSFXPlay()
+        changeCookieCount()
+    }else if (upgradesUnlocked < 3){
+        error('Purchase the upgrade Double Tap or buy 3 +1 Clicks to unlock this upgrade!')
+    }else{
+        error('You do not have enough cookies to purchase this upgrade!')
+    }
+}else if (upgrade == "five"){
+    if (cookies >= upgradeFivePriceNumber && upgradesUnlocked >= 5 && upgradeFivePurchased === 0) {
+        cookies -= upgradeFivePriceNumber;
+        cookiesSpent += upgradeFivePriceNumber;
+        upgradeFivePurchased += 1;
+        upgradesPurchased += 1;
+
+        // +1 to each upgrade
+        upgradeOnePurchased += 1;
+        cookieMultiplier += 1;
+        document.getElementById('upgradeOnePurchasedP').textContent = `Purchased: ${upgradeOnePurchased}`
+
+        upgradeThreePurchased += 1;
+        autoCPS += 1;
+        autoclick();
+        document.getElementById('upgradeThreePurchasedP').textContent = `Purchased: ${upgradeThreePurchased}`
+
+        upgradeFourPurchased += 1;
+        cookieMultiplier += 2;
+        document.getElementById('upgradeFourPurchasedP').textContent = `Purchased: ${upgradeFourPurchased}`
+        unlockGambling()
+        document.getElementById('buyButtonUpgradeFive').style.color = "lightgrey";
+        showNotification('You have successfully purchased Another One!');
+        upgradeBoughtSFXPlay();
+        changeCookieCount();
+    } else if (upgradeFivePurchased !== 0) {
+        error('You can only buy this upgrade once!');
+    } else if (upgradesUnlocked < 5) {
+        error('Purchase either Autoclicker or Grandmas Help to unlock this upgrade!');
+    } else {
+        error('Not enough cookies to purchase this upgrade!');
+    }
+}else if (upgrade == "six"){
+    if (cookies>=upgradeSixPriceNumber && upgradesUnlocked>=6){
+        cookies-=upgradeSixPriceNumber;
+         cookiesSpent += upgradeSixPriceNumber;
+        upgradeSixPurchased+=1;
+        let tempNumberOne = upgradeSixPriceNumber*.135;
+        upgradeSixPriceNumber+=tempNumberOne;
+        upgradeSixPriceNumber = Math.ceil(upgradeSixPriceNumber);
+        autoCPS+=5;
+        unlockGambling()
+        upgradesPurchased += 1;
+        document.getElementById('upgradeSixPrice').textContent = `Price: ${upgradeSixPriceNumber.toLocaleString()} Cookies`;
+        document.getElementById('upgradeSixPurchasedP').textContent = `Purchased: ${upgradeSixPurchased}`
+        showNotification('You have successfully purchased Oven Boost!')
+        upgradeBoughtSFXPlay()
+        changeCookieCount()
+        autoclick()
+    }else if (upgradesUnlocked<6){
+        error('Purchase either Autoclicker or Grandmas Help to unlock this upgrade!');
+    }else{
+        error('Not enough cookies to purchase this upgrade!')
+    }
+}else if (upgrade == "seven"){
+    if (cookies>=upgradeSevenPriceNumber && upgradesUnlocked>=7){
+        //Insert Legal Gambling Here
+    }else if (upgradesUnlocked<7){
+        error('Purchase either Another One or Oven Boost to unlock this upgrade!')
+    }else{
+        error('Not enough cookies to puchase this upgrade!')
+    }
+}else if (upgrade == "eight"){
+            if (cookies >=upgradeEightPriceNumber && upgradesUnlocked>=7){
+            cookies-=upgradeEightPriceNumber;
+             cookiesSpent += upgradeEightPriceNumber;
+            let tempNumberOne = upgradeEightPriceNumber*.175;
+            upgradeEightPriceNumber+=tempNumberOne
+            upgradeEightPriceNumber = Math.ceil(upgradeEightPriceNumber);
+            cookieMultiplier+=10;
+            upgradeEightPurchased+=1;
+            upgradesPurchased += 1;
+            document.getElementById('upgradeEightPrice').textContent = `Price: ${upgradeEightPriceNumber.toLocaleString()} Cookies`;   
+            document.getElementById('upgradeEightPurchasedP').textContent = `Purchased: ${upgradeEightPurchased}`
+            showNotification('You have successfully purchased Super Crunch!')
+            upgradeBoughtSFXPlay()
+            changeCookieCount()
+        }else if (upgradesUnlocked<7){
+            error('Purchase either Another One or Oven Boost to unlock this upgrade!')
+    }else{
+        error('Not enough cookies to purchase this upgrade!')
+    }
+
+}else if (upgrade == "nine"){
+    if (cookies >= upgradeNinePriceNumber && upgradesUnlocked>=7){
+        cookies-=upgradeNinePriceNumber;
+         cookiesSpent += upgradeNinePriceNumber;
+        let tempNumberOne = upgradeNinePriceNumber * .18;
+        upgradeNinePriceNumber+=tempNumberOne;
+        upgradeNinePriceNumber = Math.ceil(upgradeNinePriceNumber);
+        autoCPS+=10;
+        upgradeNinePurchased+=1
+        upgradesPurchased += 1;
+        document.getElementById('upgradeNinePrice').textContent = `Price: ${upgradeNinePriceNumber.toLocaleString()} Cookies`;
+        document.getElementById('upgradeNinePurchasedP').textContent = `Purchased: ${upgradeNinePurchased}`
+        showNotification('You have successfully purchased Mega Oven!')
+        upgradeBoughtSFXPlay()
+        changeCookieCount()
+        autoclick()
+    }
+}
+
+statsTextChanger();
+
+}
+function unlockAnotherOne(){
+        if (upgradesUnlocked == 4){
+            upgradesUnlocked+=1;
+            upgradesUnlocked+=1;//Unlocks 2 upgrades
+            document.getElementById('buyButtonUpgradeFive').style.color = "black"
+            document.getElementById('buyButtonUpgradeSix').style.color = "black"
+            notification('You have unlocked the upgrades Another One and Oven Boost!')
+            /*document.getElementById('upgradeSevenContainer').style.display = "block"; Hidden due to it not working*/
+            document.getElementById('upgradeEightContainer').style.display = "block";
+            document.getElementById('upgradeNineContainer').style.display = "block";
+
+    
+        //Another One Changer
+        document.getElementById('upgradeFiveTitle').textContent = "Another One!🔁🍪"
+        document.getElementById('descriptionFive').textContent = "Get 1 more of every upgrade so far (Excluding Double Tap)! It can only be purchased once."
+        document.getElementById('upgradeFivePrice').textContent = "Price: 250 Cookies"
+        document.getElementById('buyButtonUpgradeFive').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeFive').style.color = "black"
+
+        //Oven Boost Changer
+        document.getElementById('upgradeSixTitle').textContent = "Oven Boost⚡📈"
+        document.getElementById('descriptionSix').textContent = "Passively gain 5 cookies a second. Stacks!"
+        document.getElementById('upgradeSixPrice').textContent = "Price: 500 Cookies"
+        document.getElementById('buyButtonUpgradeSix').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeSix').style.color = "black"
+        }   
+}
+
+function unlockGrandmaAuto(){
+    if (upgradesUnlocked ==2){
+        upgradesUnlocked+=1;
+        upgradesUnlocked+=1;
+        notification('You have unlocked the upgrade Autoclick!')
+        notification('You have unlocked the upgrade Grandmas Help!')
+
+        //Show Another One and Oven Boost
+        document.getElementById('upgradeFiveContainer').style.display = "block";
+        document.getElementById('upgradeSixContainer').style.display = "block";
+
+        //Autoclick Changer
+        document.getElementById('upgradeThreeTitle').textContent = "Autoclick⏱️"
+        document.getElementById('descriptionThree').textContent = "Passively gain 1 Cookie a Second! Stacks!"
+        document.getElementById('upgradeThreePrice').textContent = "Price: 100 Cookies"
+        document.getElementById('buyButtonUpgradeThree').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeThree').style.color = "black"
+
+        //Grandmas Help Changer
+        document.getElementById('upgradeFourTitle').textContent = "Grandmas Help 👵🍪"
+        document.getElementById('descriptionFour').textContent = "Grandma can help you make cookies better and faster! Gives 2 more cookies per click. Stacks!"
+        document.getElementById('upgradeFourPrice').textContent = "Price: 100 Cookies"
+        document.getElementById('buyButtonUpgradeFour').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeFour').style.color = "black"
+    }
+}
+
+function unlockGambling(){
+    if (upgradesUnlocked == 6){
+        upgradesUnlocked+=1;
+        upgradesUnlocked+=1;
+        upgradesUnlocked+=1;
+        notification('You have unlocked the upgrade Legal Gambling!')
+        notification('You have unlocked the upgrade Super Crunch!')
+        notification('You have unlocked the upgrade Mega Oven!')
+
+        //Legal Gambling Changer
+        document.getElementById('upgradeSevenTitle').textContent = "Legal Gambling🎰💰"
+        document.getElementById('descriptionSeven').textContent = "Pay 1000 cookies for a chance to strike it rich!"
+        document.getElementById('upgradeSevenPrice').textContent = "Price: 1000 Cookies"
+        document.getElementById('buyButtonUpgradeSeven').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeSeven').style.color = "black"
+
+        //Super Crunch Changer
+        document.getElementById('upgradeEightTitle').textContent = "Super Crunch 💪🍪" 
+        document.getElementById('descriptionEight').textContent = "Gain +10 cookies per click! Stacks!"
+        document.getElementById('upgradeEightPrice').textContent = "Price: 1000 Cookies"
+        document.getElementById('buyButtonUpgradeEight').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeEight').style.color = "black"
+
+        //Mega Oven Changer
+        document.getElementById('upgradeNineTitle').textContent = "Mega Oven 🔥🍪" 
+        document.getElementById('descriptionNine').textContent = "Passively gain +10 cookies per second! Stacks!"
+        document.getElementById('upgradeNinePrice').textContent = "Price: 2000 Cookies"
+        document.getElementById('buyButtonUpgradeNine').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeNine').style.color = "black"
+
+        //Fixes a glitch that has Autoclick show up as 1000 cookies when it doesn't
+        document.getElementById('upgradeThreePrice').textContent = `Price: ${upgradeThreePriceNumber} Cookies`
+    }
+}
+
+function playMusicLooping() {
+    if (musicEnabled) {
+        if (currentTrack === 1) {
+            music1.volume = 0.5;
+            music1.play();
+        } else {
+            music2.volume = 0.5;
+            music2.play();
+        }
+    }
+}
+
+// When song1 ends, play song2
+music1.addEventListener('ended', () => {
+    currentTrack = 2;
+    playMusicLooping();
+});
+
+// When song2 ends, play song1
+music2.addEventListener('ended', () => {
+    currentTrack = 1;
+    playMusicLooping();
+});
+
+
+function autoclick(){
+    if (!autoclickStarted) {
+        autoclickStarted = true;
+        setInterval(() => {
+            if (autoCPS > 0) {
+                cookies += autoCPS;
+                cookiesGainedAllTime += autoCPS;
+                cookiesGainedPassively += autoCPS;
+                statsTextChanger();
+                changeCookieCount();
+            }
+        }, 1000);
+    }
+}
+
+function toggleStats(openOrClose){
+    if (openOrClose == "open"){
+        document.getElementById('statsArea').style.display = "block";
+    }else if (openOrClose == "close"){
+        document.getElementById('statsArea').style.display = "none";
+    }
+}
+
+function toggleAchievements(openOrClose){
+    if (openOrClose == "open"){
+        document.getElementById('achievementArea').style.display = "block";
+    }else if (openOrClose == "close"){
+        document.getElementById('achievementArea').style.display = "none";
+    }
+}
+
+function statsTextChanger(){
+    document.getElementById('cookiesClickedStat').textContent = clicksAllTime.toLocaleString();
+    document.getElementById('cookiesGainedStat').textContent = cookiesGainedAllTime.toLocaleString();
+    document.getElementById('cookiesGainedOnClickStat').textContent = cookieMultiplier.toLocaleString();
+    document.getElementById('cookiesPassivelyGainedPSStat').textContent = autoCPS.toLocaleString();
+    document.getElementById('upgradesPurchasedStat').textContent = upgradesPurchased.toLocaleString();
+    document.getElementById('upgradesUnlockedStat').textContent = upgradesUnlocked.toLocaleString();
+    document.getElementById('cookiesSpentStat').textContent = cookiesSpent.toLocaleString();
+    document.getElementById('cookiesGainedClickingStat').textContent = cookiesGainedClicking.toLocaleString();
+    document.getElementById('cookiesGainedPassivelyStat').textContent = cookiesGainedPassively.toLocaleString();
+
+}
+
+function toggleMusic(){
+    if (musicEnabled == true){
+        musicEnabled = false;
+    }else{
+        musicEnabled = true;
+    }
+}
+function toggleSoundEffects(){
+    if (soundEffectsEnabled == true){
+        soundEffectsEnabled = false;
+    }else{
+        soundEffectsEnabled = true;
+    }
+}
+
+function closeSettings() {
+  hideAllScreens();
+  document.getElementById('menuScreen').style.display = 'block';
+}
+
+function reload(){
+    location.reload();
+}
+
+</script>
+</body>
+</html>

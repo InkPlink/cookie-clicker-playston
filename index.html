@@ -56,6 +56,7 @@
     </label>
     <span class="switch-label">SFX</span>
   </li>
+
 </ul>
 
     </div>
@@ -133,17 +134,7 @@
                 </div>
                 <button id="buyButtonUpgradeTwo" onclick="upgradeBought('two')">BUY</button>
             </li>
-            <li> <!--Autoclick-->
-                <h3 id="upgradeThreeTitle">🔒🔒🔒</h3>
-                <p class="descriptionUpgrade" id= "descriptionThree" style="font-size: medium;">❔❔❔❔❔</p>
-
-                <div class="priceRow">
-                    <p style="color: red;" id="upgradeThreePrice">Price: ❓❓❓ Cookies</p>
-                    <p id="upgradeThreePurchasedP">Purchased: 0</p>
-                </div>
-                <button id="buyButtonUpgradeThree" style="color: lightgrey" onclick="upgradeBought('three')">🚫</button>
-            </li>
-            <li> <!--Grandma's Help-->
+            <li> <!--Grandma's Help-Listed as Upgrade Four-->
                 <h3 id="upgradeFourTitle">🔒🔒🔒</h3>
                 <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionFour">❔❔❔❔❔</p>
                 
@@ -152,6 +143,16 @@
                     <p id="upgradeFourPurchasedP">Purchased: 0</p>
                 </div>
                 <button style="color: lightgray;" id="buyButtonUpgradeFour" onclick="upgradeBought('four')">🚫</button>
+            </li>
+            <li> <!--Autoclick-Listed as Upgrade Three-->
+                <h3 id="upgradeThreeTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" id= "descriptionThree" style="font-size: medium;">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeThreePrice">Price: ❓❓❓ Cookies</p>
+                    <p id="upgradeThreePurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeThree" style="color: lightgrey" onclick="upgradeBought('three')">🚫</button>
             </li>
             <li id="upgradeFiveContainer" style="display: none;"> <!--Another One!-->
                 <h3 id="upgradeFiveTitle">🔒🔒🔒</h3>
@@ -257,31 +258,31 @@ let hasSeenUpgradeSevenNotice = false;
 let hasSeenUpgradeEightNotice = false;
 let hasSeenUpgradeNineNotice = false;
 
-//Upgrade Three Variables
-let upgradeThreePriceNumber=100
+//Upgrade Three Variables-Autoclick
+let upgradeThreePriceNumber=200;
 let upgradeThreePurchased=0;
 
-//Upgrade Four Variables
+//Upgrade Four Variables-Grandma's Help
 let upgradeFourPriceNumber=100;
 let upgradeFourPurchased=0;
 
-//Upgrade Five Variables
+//Upgrade Five Variables-Another One
 let upgradeFivePriceNumber=250;
 let upgradeFivePurchased=0;
 
-//Upgrade Six Variables
+//Upgrade Six Variables-Oven Boost
 let upgradeSixPriceNumber=500;
 let upgradeSixPurchased=0;
 
-//Upgrade Seven Variables
+//Upgrade Seven Variables-Legal Gambling
 let upgradeSevenPriceNumber = 1000;
 let upgradeSevenPurchased=0;
 
-//Upgrade Eight Variables
+//Upgrade Eight Variables-Super Crunch
 let upgradeEightPriceNumber = 1000;
 let upgradeEightPurchased=0;
 
-//Upgrade Nine Variables
+//Upgrade Nine Variables-Mega Oven
 let upgradeNinePriceNumber = 2000;
 let upgradeNinePurchased=0;
 
@@ -319,7 +320,6 @@ function openSettings() {
 
 function changeCookieCount(){
 document.getElementById('scoreNumber').textContent = cookies.toLocaleString();
-clickSFX();
     statsTextChanger();
     priceTextColorChangers()
 }
@@ -331,7 +331,11 @@ function returnToMainMenu() {
 
 function upgradeBoughtSFXPlay(){
     if (soundEffectsEnabled){
-    document.getElementById("upgradeBoughtSFX").play();
+    const upgradeSFX = document.getElementById("upgradeBoughtSFX")
+    upgradeSFX.pause();
+    upgradeSFX.currentTime = 0;
+    upgradeSFX.volume = 1;
+    upgradeSFX.play();
     }
 }
 
@@ -377,6 +381,7 @@ function doubleTap(){
 
 function cookieClicked(){
     doubleTap()
+    clickSFX();
     cookies += cookiesOnClick;
     clicksAllTime += 1;
     cookiesGainedAllTime += cookiesOnClick;
@@ -764,7 +769,7 @@ function unlockGrandmaAuto(){
         //Autoclick Changer
         document.getElementById('upgradeThreeTitle').textContent = "Autoclick⏱️"
         document.getElementById('descriptionThree').textContent = "Passively gain 1 Cookie a Second! Stacks!"
-        document.getElementById('upgradeThreePrice').textContent = "Price: 100 Cookies"
+        document.getElementById('upgradeThreePrice').textContent = "Price: 200 Cookies"
         document.getElementById('buyButtonUpgradeThree').textContent = "BUY"
         document.getElementById('buyButtonUpgradeThree').style.color = "black"
 

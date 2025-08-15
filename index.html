@@ -293,7 +293,7 @@ function startGame(){
   hideAllScreens();
   document.getElementById('game-layout').style.display = 'block';
 
-  menuMusic.pause();
+  stopAllSounds();
   
     if (!musicStarted) {
         playMusicLooping();
@@ -312,8 +312,7 @@ function hideAllScreens() {
 function openSettings() {
   hideAllScreens();
   document.getElementById('settingsScreen').style.display = 'block';
-  menuMusic.volume = 1;
-  menuMusic.play();
+  playMenuMusic();
 }
 
 
@@ -884,8 +883,10 @@ function statsTextChanger(){
 function toggleMusic(){
     if (musicEnabled == true){
         musicEnabled = false;
+        stopAllSounds();
     }else{
         musicEnabled = true;
+        playMenuMusic();
     }
 }
 function toggleSoundEffects(){
@@ -900,8 +901,7 @@ function returnToMainMenu(){
     hideAllScreens();
     document.getElementById('menuScreen').style.display = 'block';
     stopAllSounds();
-    menuMusic.volume = 1;
-    menuMusic.play();
+    playMenuMusic();
 }
 
 function stopAllSounds() {
@@ -919,6 +919,13 @@ function closeSettings() {
 
 function reload(){
     location.reload();
+}
+
+function playMenuMusic(){
+    if (musicEnabled){
+    menuMusic.volume = 1;
+    menuMusic.play();
+    }
 }
 
 </script>

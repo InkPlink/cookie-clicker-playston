@@ -375,3 +375,9 @@ body {
   background-color: #f0f0f0;
   cursor: pointer;
 }
+
+#statsArea {
+  max-height: 300px;  /* adjust based on your design */
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}

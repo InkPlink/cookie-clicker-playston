@@ -1,7 +1,9 @@
 #game-layout{
-    display: flex;
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap; /* allows items to stack on small screens */
 }
 
 body {
@@ -380,4 +382,30 @@ body {
   max-height: 300px;  /* adjust based on your design */
   overflow-y: auto;
   scroll-behavior: smooth;
+}
+
+@media (max-width: 600px) {
+  #cookie {
+    font-size: 180px;
+  }
+
+  #shopArea {
+    position: static;
+    width: 100%;
+    max-height: none;
+    margin-top: 20px;
+  }
+
+  #sideButtons {
+    position: static;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    transform: none;
+  }
+
+  #statsArea, #achievementArea {
+    width: 90%;
+    max-height: 300px;
+  }
 }

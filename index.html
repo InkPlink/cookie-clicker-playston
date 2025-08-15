@@ -14,6 +14,7 @@
     
     <audio id="gameMusic1" src="Cookie Clicker Song.mp3"></audio>
     <audio id="gameMusic2" src="Cookie Clicker Song 2.mp3"></audio>
+    <audio id="menuMusic" src="Menu.mp3" loop></audio>
     <audio id="doubleTapSFX" src="doubletap.mp3"></audio>
     <audio id="upgradeBoughtSFX" src="chaching.mp3"></audio>
     <audio id="notificationSFX" src="notification.mp3"></audio>
@@ -64,7 +65,7 @@
 <div id="sideButtons">
     <button id="statsButton" onclick="toggleStats('open')">STATS📊</button>
     <button id="achievementButton" onclick="toggleAchievements('open')">ACHIEVEMENTS🏆</button>
-    <button id="returnToMenuButton" onclick="reload()">RETURN TO MAIN MENU</button>
+    <button id="returnToMenuButton" onclick="returnToMainMenu()">RETURN TO MAIN MENU</button>
 </div>
 
         <div id="statsArea" class="popUpInCenter hidden">
@@ -233,6 +234,7 @@ let soundEffectsEnabled = true;
 let currentTrack = 1;
 const music1 = document.getElementById('gameMusic1');
 const music2 = document.getElementById('gameMusic2');
+const menuMusic = document.getElementById('menuMusic');
 
 //Erase Mode
 let eraseMode = false;
@@ -290,6 +292,9 @@ let autoclickStarted = false;
 function startGame(){
   hideAllScreens();
   document.getElementById('game-layout').style.display = 'block';
+
+  menuMusic.pause();
+  
     if (!musicStarted) {
         playMusicLooping();
     }
@@ -307,6 +312,8 @@ function hideAllScreens() {
 function openSettings() {
   hideAllScreens();
   document.getElementById('settingsScreen').style.display = 'block';
+  menuMusic.volume = 1;
+  menuMusic.play();
 }
 
 
@@ -887,6 +894,22 @@ function toggleSoundEffects(){
     }else{
         soundEffectsEnabled = true;
     }
+}
+
+function returnToMainMenu(){
+    hideAllScreens();
+    document.getElementById('menuScreen').style.display = 'block';
+    stopAllSounds();
+    menuMusic.volume = 1;
+    menuMusic.play();
+}
+
+function stopAllSounds() {
+  const sounds = document.querySelectorAll('audio');
+  sounds.forEach(sound => {
+    sound.pause();
+    sound.currentTime = 0;
+  });
 }
 
 function closeSettings() {

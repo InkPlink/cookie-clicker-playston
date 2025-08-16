@@ -562,7 +562,7 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
     }
 
     //Cookie Punch
-    if (cookies>=upgradeTenPriceNumber && upgradesUnlocked>=8){
+    if (cookies>=upgradeTenPriceNumber && upgradesUnlocked>=9){
         document.getElementById('upgradeTenPrice').style.color = "green"
         if (hasSeenUpgradeTenNotice == false){
             notification('You can now afford Cookie Punch!')
@@ -571,6 +571,18 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
 }else{
         document.getElementById('upgradeTenPrice').style.color = "red";
         hasSeenUpgradeTenNotice = false;
+    }
+
+    //Cookie Farm
+    if (cookies>=upgradeElevenPriceNumber && upgradesUnlocked>=9){
+        document.getElementById('upgradeElevenPrice').style.color = "green"
+        if (hasSeenUpgradeElevenNotice == false){
+            notification('You can now afford Cookie Farm!')
+            hasSeenUpgradeElevenNotice = true;
+        }
+}else{
+        document.getElementById('upgradeElevenPrice').style.color = "red";
+        hasSeenUpgradeElevenNotice = false;
     }
 }
 
@@ -893,6 +905,8 @@ function unlockGrandmaAuto(){
         document.getElementById('upgradeFourPrice').textContent = "Price: 100 Cookies"
         document.getElementById('buyButtonUpgradeFour').textContent = "BUY"
         document.getElementById('buyButtonUpgradeFour').style.color = "black"
+
+        statsTextChanger();
     }
 }
 
@@ -931,11 +945,14 @@ function unlockGambling(){
 
         //Fixes a glitch that has Autoclick show up as 1000 cookies when it doesn't
         document.getElementById('upgradeThreePrice').textContent = `Price: ${upgradeThreePriceNumber} Cookies`
+
+        statsTextChanger();
     }
 }
 
 function unlockPunch(){
     if (upgradesUnlocked ==9){
+        upgradesUnlocked+=1;
         upgradesUnlocked+=1;
         notification('You have unlocked the upgrade Cookie Punch!')
 
@@ -952,6 +969,7 @@ function unlockPunch(){
         document.getElementById('upgradeElevenPrice').textContent = "Price: 25000 Cookies"
         document.getElementById('buyButtonUpgradeEleven').textContent = "BUY"
         document.getElementById('buyButtonUpgradeEleven').style.color = "black"
+        statsTextChanger();
     }
 }
 

@@ -228,6 +228,17 @@
                     <p id="upgradeElevenPurchasedP">Purchased: 0</p>
                 </div>
                 <button id="buyButtonUpgradeEleven" onclick="upgradeBought('eleven')">🚫</button>
+            </li>
+            <li id="upgradeTwelveContainer" style="display: none;"> <!--Assembly Line-->
+                <h3 id="upgradeTwelveTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionTwelve">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeTwelvePrice">Price: ❓❓❓❓❓❓ Cookies</p>
+                    <p id="upgradeTwelvePurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeTwelve" onclick="upgradeBought('twelve')">🚫</button>
+            </li>
         </ul>
     </div>
 </div>
@@ -329,6 +340,8 @@ let upgradeTwelvePurchased=0;
 
 //Autoclicker Management
 let autoCPS=0;
+let autoclickTimer = null;
+let autoclickInterval = 1000;
 let autoclickStarted = false;
 
 function startGame(){
@@ -583,6 +596,18 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
 }else{
         document.getElementById('upgradeElevenPrice').style.color = "red";
         hasSeenUpgradeElevenNotice = false;
+    }
+
+    //Assembly Line
+    if (cookies>=upgradeTwelvePriceNumber && upgradesUnlocked>=11){
+        document.getElementById('upgradeTwelvePrice').style.color = "green"
+        if (hasSeenUpgradeTwelveNotice == false){
+            notification('You can now afford Assembly Line!')
+            hasSeenUpgradeTwelveNotice = true;
+        }
+}else{
+        document.getElementById('upgradeTwelvePrice').style.color = "red";
+        hasSeenUpgradeTwelveNotice = false;
     }
 }
 
@@ -847,6 +872,25 @@ function upgradeBought(upgrade){
 }else{
     error('Not enough cookies to purchase this upgrade!')
 }
+}else if (upgrade == "twelve"){
+    if (cookies >= upgradeTwelvePriceNumber && upgradesUnlocked>=9 && upgradeTwelvePurchased==0){
+        cookies-=upgradeTwelvePriceNumber;
+        cookiesSpent += upgradeTwelvePriceNumber;
+        upgradeTwelvePurchased+=1;
+        upgradesPurchased +=1;
+        document.getElementById('buyButtonUpgradeTwelve').style.color = "lightgrey";
+        document.getElementById('upgradeTwelvePurchasedP').textContent = `Purchased: 1`;
+        applyAssemblyLineUpgrade();
+        showNotification('You have successfully purchased Assembly Line!');
+        upgradeBoughtSFXPlay();
+        changeCookieCount();
+    }else if (upgradesUnlocked<9){
+        error('Purchase either Super Crunch or Mega Oven to unlock this upgrade!')
+    }else if (upgradeTwelvePurchased>=1){
+        error('You can only buy this upgrade once!')
+    }else {
+        error('Not enough cookies to purchase this upgrade!')
+    }
 }
 
 statsTextChanger();
@@ -918,6 +962,7 @@ function unlockGambling(){
         //Shows Cookie Punch, Cookie Farm, and Assembly Line
         document.getElementById('upgradeTenContainer').style.display = "block";
         document.getElementById('upgradeElevenContainer').style.display = "block";
+        document.getElementById('upgradeTwelveContainer').style.display = "block";
         /*notification('You have unlocked the upgrade Legal Gambling!') Hidden due to it not working*/
         notification('You have unlocked the upgrade Super Crunch!')
         notification('You have unlocked the upgrade Mega Oven!')
@@ -954,7 +999,10 @@ function unlockPunch(){
     if (upgradesUnlocked ==9){
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
+        upgradesUnlocked+=1;
         notification('You have unlocked the upgrade Cookie Punch!')
+        notification('You have unlocked the upgrade Cookie Farm!')
+        notification('You have unlocked the upgrade Assembly Line!')
 
         //Cookie Punch Changer
         document.getElementById('upgradeTenTitle').textContent = "Cookie Punch👊🍪"
@@ -969,6 +1017,14 @@ function unlockPunch(){
         document.getElementById('upgradeElevenPrice').textContent = "Price: 25000 Cookies"
         document.getElementById('buyButtonUpgradeEleven').textContent = "BUY"
         document.getElementById('buyButtonUpgradeEleven').style.color = "black"
+
+        //Assembly Line Changer
+        document.getElementById('upgradeTwelveTitle').textContent = "Assembly Line🏭🍪"
+        document.getElementById('descriptionTwelve').textContent = "Halves the autoclick interval, making you gain cookies passively faster! Can only be purchased once."
+        document.getElementById('upgradeTwelvePrice').textContent = "Price: 50000 Cookies"
+        document.getElementById('buyButtonUpgradeTwelve').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeTwelve').style.color = "black"
+
         statsTextChanger();
     }
 }
@@ -1000,19 +1056,29 @@ music2.addEventListener('ended', () => {
 });
 
 
-function autoclick(){
-    if (!autoclickStarted) {
-        autoclickStarted = true;
-        setInterval(() => {
-            if (autoCPS > 0) {
-                cookies += autoCPS;
-                cookiesGainedAllTime += autoCPS;
-                cookiesGainedPassively += autoCPS;
-                statsTextChanger();
-                changeCookieCount();
-            }
-        }, 1000);
-    }
+
+function doAutoclick() {
+  if (autoCPS > 0) {
+    cookies += autoCPS;
+    cookiesGainedAllTime         += autoCPS;
+    cookiesGainedPassively       += autoCPS;
+    statsTextChanger();
+    changeCookieCount();
+  }
+}
+
+function autoclick() {
+  if (autoclickTimer === null) {
+    autoclickTimer = setInterval(doAutoclick, autoclickInterval);
+  }
+}
+
+function applyAssemblyLineUpgrade() {
+  autoclickInterval = Math.round(autoclickInterval / 2);
+  if (autoclickTimer !== null) {
+    clearInterval(autoclickTimer);
+    autoclickTimer = setInterval(doAutoclick, autoclickInterval);
+  }
 }
 
 function toggleStats(openOrClose){
@@ -1035,7 +1101,12 @@ function statsTextChanger(){
     document.getElementById('cookiesClickedStat').textContent = clicksAllTime.toLocaleString();
     document.getElementById('cookiesGainedStat').textContent = cookiesGainedAllTime.toLocaleString();
     document.getElementById('cookiesGainedOnClickStat').textContent = cookieMultiplier.toLocaleString();
-    document.getElementById('cookiesPassivelyGainedPSStat').textContent = autoCPS.toLocaleString();
+    if ( upgradeTwelvePurchased == 0){
+        document.getElementById('cookiesPassivelyGainedPSStat').textContent = autoCPS.toLocaleString();
+    }else{
+        let totalCPS = autoCPS * 2;
+        document.getElementById('cookiesPassivelyGainedPSStat').textContent = totalCPS.toLocaleString();
+    }
     document.getElementById('upgradesPurchasedStat').textContent = upgradesPurchased.toLocaleString();
     document.getElementById('upgradesUnlockedStat').textContent = upgradesUnlocked.toLocaleString();
     document.getElementById('cookiesSpentStat').textContent = cookiesSpent.toLocaleString();

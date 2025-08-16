@@ -453,3 +453,467 @@ body {
     padding: 10px;
   }
 }
+
+#game-layout{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap; /* allows items to stack on small screens */
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Center the cookie dead center */
+#cookieArea {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.scoreWrapper{
+    text-align: center;
+    width: 100%;
+}
+
+#scoreNumber{
+    font-size: 75px;
+}
+
+/* Keep the shop stuck to the right */
+#shopArea {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 250px;
+  background-color: #fff8dc;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+  max-height: 600px;           /* optional: limits total shop height */
+  overflow-y: auto;            /* makes the entire shop scroll if needed */
+}
+
+#shopArea ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 400px;           /* this scrolls just the list, not the whole shop */
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* This makes the empty zone and cookie share space */
+.zone, #cookieArea {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+#cookie {
+  font-size: 300px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  position: relative;
+  z-index: 10;
+  touch-action: manipulation;
+}
+
+#cookie:active {
+  transform: scale(0.95);
+}
+
+#shopArea h2 {
+  margin-top: 0;
+}
+
+/* Remove bullets from list */
+#shopArea ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Individual shop item */
+#shopArea li {
+  background-color: #fffaf0;
+  border: 2px solid #deb887;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Upgrade title */
+#shopArea h3 {
+  margin: 0 0 8px;
+  color: black;
+}
+
+
+/* Row with price and purchased */
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.priceRow p {
+  margin: 0;
+  padding: 0 5px;
+  font-weight: bold;
+  font-size: small;
+}
+
+#notificationArea {
+  position: absolute;
+  top: 100%;           /* Just below the cookie */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column-reverse;  /* Newest notifications at the top */
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.notification {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: 1;
+  animation: slideFadeOut 4s forwards;
+}
+
+@keyframes slideFadeOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.cookie-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cookie-wrapper {
+  position: relative; /* So notifications use this as anchor */
+}
+
+#sideButtons {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000;
+}
+
+#sideButtons button {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background-color: #ffe4b5;
+  color: #333;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+#sideButtons button:hover {
+  transform: scale(1.05);
+  background-color: #ffdb85;
+}
+
+.popUpInCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background-color: white;
+  border: 2px solid #deb887;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  text-align: left;
+}
+
+.popUpInCenter h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.popUpInCenter ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popUpInCenter li {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.hidden{
+  display : none;
+}
+
+hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+#loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #3a75d5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+  font-family: sans-serif;
+  color: white;
+}
+
+#loadingContent {
+  text-align: center;
+}
+
+#loadingContent h1 {
+  font-size: 2.5em;
+  margin-bottom: 5px;
+}
+
+#loadingContent p {
+  font-size: 1em;
+  margin-bottom: 20px;
+}
+
+#loadingContent ul {
+  list-style: none;
+  padding: 0;
+}
+
+#loadingContent li {
+  margin: 10px 0;
+}
+
+#loadingContent button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+#loadingContent button:hover {
+  transform: scale(1.1);
+  text-decoration: underline;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 32px;
+  margin-right: 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #dc3545; /* red for OFF */
+  border: 2px solid #dc3545;
+  border-radius: 34px;
+  transition: 0.4s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  left: 4px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+.switch input:checked + .slider {
+  background-color: #28a745; /* green for ON */
+  border-color: #28a745;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.switch-label {
+  font-size: 16px;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #3a75d5; /* same blue as your menu */
+  color: white;
+  margin: 0;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #3a75d5;
+  color: black;
+  margin: 0;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+#backToMenuButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 1rem;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+#statsArea {
+  max-height: 300px;  /* adjust based on your design */
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 600px) {
+  #cookie {
+    font-size: 180px;
+  }
+
+  #shopArea {
+    position: static;
+    width: 100%;
+    max-height: none;
+    margin-top: 20px;
+  }
+
+  #sideButtons {
+    position: static;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    transform: none;
+  }
+
+  #statsArea, #achievementArea {
+    width: 90%;
+    max-height: 300px;
+  }
+}
+
+#loadingScreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  overflow-y: auto; /* ✅ scroll if too tall */
+}
+
+#loadingContent ul {
+  padding: 0;
+}
+
+#loadingContent button {
+  background: white;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  z-index: 10;
+}
+
+@media (max-width: 600px) {
+  #loadingScreen {
+    padding: 10px;
+  }
+
+  #loadingContent h1 {
+    font-size: 1.8rem;
+  }
+
+  #loadingContent button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+}
+
+/* Make taps trigger actions without being interpreted as a zoom gesture */
+#cookie {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent; /* removes gray flash on iOS */
+  -webkit-user-select: none;
+  user-select: none;
+}

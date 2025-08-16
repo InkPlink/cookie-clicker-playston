@@ -378,7 +378,7 @@ let upgradeTwelvePriceNumber = 50000;
 let upgradeTwelvePurchased=0;
 
 //Upgrade Thirteen Variables-King Midas' Touch
-let upgradeThirteenPriceNumber = 100000;
+let upgradeThirteenPriceNumber = 50000;
 let upgradeThirteenPurchased=0;
 
 //Upgrade Thirteen Upgrade Activator
@@ -514,7 +514,7 @@ function doubleTap() {
     if (DoubleTap === true && Math.random() < 0.0125) {
         cookiesOnClick = cookieMultiplier * 2;
         doubleTapNoti();
-    } else if (KingMidasTouch === true && Math.random() < 0.006) {
+    } else if (KingMidasTouch === true && Math.random() < 0.00101) {
         kingMidasNoti();
         cookiesOnClick = cookieMultiplier + 50000;
     }
@@ -817,6 +817,7 @@ function upgradeBought(upgrade){
         cookiesSpent += upgradeFivePriceNumber;
         upgradeFivePurchased += 1;
         upgradesPurchased += 1;
+        document.getElementById('upgradeFivePurchasedP').textContent = `Purchased: 1`;
 
         // +1 to each upgrade
         upgradeOnePurchased += 1;
@@ -1131,7 +1132,7 @@ function unlockPunch(){
         //King Midas' Touch Changer
         document.getElementById('upgradeThirteenTitle').textContent = "King Midas' Touch👑✨"
         document.getElementById('descriptionThirteen').textContent = "Develop King Midas' Golden Touch! One in every thousand click will give you 50,000 cookies plus what you would normally get! Can only be purchased once."
-        document.getElementById('upgradeThirteenPrice').textContent = "Price: 100000 Cookies"
+        document.getElementById('upgradeThirteenPrice').textContent = "Price: 50000 Cookies"
         document.getElementById('buyButtonUpgradeThirteen').textContent = "BUY"
         document.getElementById('buyButtonUpgradeThirteen').style.color = "black"
 

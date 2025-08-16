@@ -472,25 +472,3 @@ body {
   -webkit-user-select: none;           /* can't long-press to select text */
   user-select: none;
 }
-
-/* Fixed desktop width; iPhone will scale this down */
-#desktopCanvas {
-  width: 1280px;           /* set to your desktop design width */
-  margin: 0 auto;          /* center on desktop */
-  transform-origin: top left;
-}
-
-/* iPhone/small screens: scale the whole desktop canvas */
-@media (max-width: 900px) {
-  html, body {
-    height: 100%;
-    overflow: hidden;      /* prevent double scrollbars while scaled */
-  }
-  #desktopCanvas {
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform: scale(var(--scale, 1));
-    /* height will be set from JS so content isn't cut off */
-  }
-}

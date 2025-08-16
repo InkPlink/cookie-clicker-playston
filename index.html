@@ -6,8 +6,8 @@
     <title>Cookie Clicker!</title>
 
     <link rel="stylesheet" href="cookie_clicker.css">
-    <meta name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+
 </head>
 
 <body>
@@ -24,6 +24,8 @@
     <audio id="clickSFX" src="Click.mp3"></audio>
 
     <!--Divs-->
+
+    <div id="desktopCanvas">
 
 <div id="menuScreen">
   <div id="loadingScreen">
@@ -217,8 +219,19 @@
                 </div>
                 <button id="buyButtonUpgradeTen" onclick="upgradeBought('ten')">🚫</button>
             </li>
+            <li id="upgradeElevenContainer" style="display: none;"> <!--Cookie Farm-->
+                <h3 id="upgradeElevenTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionEleven">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeElevenPrice">Price: ❓❓❓❓❓ Cookies</p>
+                    <p id="upgradeElevenPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeEleven" onclick="upgradeBought('eleven')">🚫</button>
         </ul>
     </div>
+</div>
+
 </div>
 
 
@@ -271,6 +284,8 @@ let hasSeenUpgradeSevenNotice = false;
 let hasSeenUpgradeEightNotice = false;
 let hasSeenUpgradeNineNotice = false;
 let hasSeenUpgradeTenNotice = false;
+let hasSeenUpgradeElevenNotice = false;
+let hasSeenUpgradeTwelveNotice = false;
 
 //Upgrade Three Variables-Autoclick
 let upgradeThreePriceNumber=200;
@@ -303,6 +318,14 @@ let upgradeNinePurchased=0;
 //Upgrade Ten Variables-Cookie Punch
 let upgradeTenPriceNumber = 10000;
 let upgradeTenPurchased=0;
+
+//Upgrade Eleven Variables-Cookie Farm
+let upgradeElevenPriceNumber = 25000;
+let upgradeElevenPurchased=0;
+
+//Upgrade Twelve Variables-Assembly Line
+let upgradeTwelvePriceNumber = 50000;
+let upgradeTwelvePurchased=0;
 
 //Autoclicker Management
 let autoCPS=0;
@@ -506,7 +529,7 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
     if (cookies>=upgradeSevenPriceNumber && upgradesUnlocked>=7){
         document.getElementById('upgradeSevenPrice').style.color = "green";
         if (hasSeenUpgradeSevenNotice == false){
-            /*notification('You can now afford Legal Gambling!')*/
+            /*notification('You can now afford Legal Gambling!') Hidden for now*/
             hasSeenUpgradeSevenNotice = true;
         }
     }else{
@@ -793,6 +816,25 @@ function upgradeBought(upgrade){
 }else{
     error('Not enough cookies to purchase this upgrade!')
 }
+}else if (upgrade == "eleven"){
+    if (cookies >= upgradeElevenPriceNumber && upgradesUnlocked>=9){
+        cookies-=upgradeElevenPriceNumber;
+         cookiesSpent += upgradeElevenPriceNumber;
+         let tempNumberOne = upgradeElevenPriceNumber * .24;
+         upgradeElevenPriceNumber+=tempNumberOne;
+            upgradeElevenPriceNumber = Math.ceil(upgradeElevenPriceNumber);
+            autoCPS+=50;
+            upgradeElevenPurchased+=1;
+            upgradesPurchased +=1;
+            document.getElementById('upgradeElevenPrice').textContent = `Price: ${upgradeElevenPriceNumber.toLocaleString()} Cookies`;
+            document.getElementById('upgradeElevenPurchasedP').textContent = `Purchased: ${upgradeElevenPurchased}`
+            showNotification('You have successfully purchased Cookie Farm!')
+            upgradeBoughtSFXPlay()
+    }else if (upgradesUnlocked<9){
+        error('Purchase either Super Crunch or Mega Oven to unlock this upgrade!')
+}else{
+    error('Not enough cookies to purchase this upgrade!')
+}
 }
 
 statsTextChanger();
@@ -859,8 +901,9 @@ function unlockGambling(){
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
-        //Shows Cookie Punch
+        //Shows Cookie Punch, Cookie Farm, and Assembly Line
         document.getElementById('upgradeTenContainer').style.display = "block";
+        document.getElementById('upgradeElevenContainer').style.display = "block";
         /*notification('You have unlocked the upgrade Legal Gambling!') Hidden due to it not working*/
         notification('You have unlocked the upgrade Super Crunch!')
         notification('You have unlocked the upgrade Mega Oven!')
@@ -902,6 +945,13 @@ function unlockPunch(){
         document.getElementById('upgradeTenPrice').textContent = "Price: 10000 Cookies"
         document.getElementById('buyButtonUpgradeTen').textContent = "BUY"
         document.getElementById('buyButtonUpgradeTen').style.color = "black"
+
+        //Cookie Farm Changer
+        document.getElementById('upgradeElevenTitle').textContent = "Cookie Farm🌾🍪"
+        document.getElementById('descriptionEleven').textContent = "Gain +50 cookies per second! Stacks!"
+        document.getElementById('upgradeElevenPrice').textContent = "Price: 25000 Cookies"
+        document.getElementById('buyButtonUpgradeEleven').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeEleven').style.color = "black"
     }
 }
 
@@ -1025,9 +1075,29 @@ function playMenuMusic(){
     }
 }
 
+  (function () {
+    const BASE_WIDTH = 1280; // must match #desktopCanvas width
+    const root = document.documentElement;
+    const canvas = document.getElementById('desktopCanvas');
+
+    function applyScale() {
+      // Scale to fit device width, but never upscale on desktop
+      const scale = Math.min(window.innerWidth / BASE_WIDTH, 1);
+      root.style.setProperty('--scale', scale);
+
+      // Adjust canvas height so the whole page remains scrollable if tall
+      // (divide the viewport height by scale to get the unscaled height)
+      if (window.innerWidth <= 900) {
+        canvas.style.height = (window.innerHeight / scale) + 'px';
+      } else {
+        canvas.style.height = '';
+      }
+    }
+
+    window.addEventListener('resize', applyScale);
+    window.addEventListener('orientationchange', applyScale);
+    applyScale();
+  })();
 </script>
 </body>
 </html>
-
-
-

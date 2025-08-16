@@ -21,6 +21,7 @@
     <audio id="notificationSFX" src="notification.mp3"></audio>
     <audio id="errorSFX" src="error.mp3"></audio>
     <audio id="clickSFX" src="Click.mp3"></audio>
+    <audio id="kingMidasSFX" src="Midas' Golden Touch.mp3"></audio>
 
     <!--Divs-->
 
@@ -254,6 +255,15 @@
                 </div>
                 <button id="buyButtonUpgradeTwelve" onclick="upgradeBought('twelve')">🚫</button>
             </li>
+            <li id="upgradeThirteenContainer" style="display: none;"> <!--King Midas' Touch-->
+                <h3 id="upgradeThirteenTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionThirteen">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeThirteenPrice">❓❓❓❓❓❓</p>
+                    <p id="upgradeThirteenPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeThirteen" onclick="upgradeBought('thirteen')">🚫</button>
         </ul>
     </div>
 </div>
@@ -305,9 +315,6 @@ const music1 = document.getElementById('gameMusic1');
 const music2 = document.getElementById('gameMusic2');
 const menuMusic = document.getElementById('menuMusic');
 
-//Erase Mode
-let eraseMode = false;
-
 //Upgrade One Variables
 let UpgradeOnePriceNumber=10;
 let upgradeOnePurchased=0;
@@ -328,6 +335,7 @@ let hasSeenUpgradeNineNotice = false;
 let hasSeenUpgradeTenNotice = false;
 let hasSeenUpgradeElevenNotice = false;
 let hasSeenUpgradeTwelveNotice = false;
+let hasSeenupgradeThirteenNotice = false;
 
 //Upgrade Three Variables-Autoclick
 let upgradeThreePriceNumber=200;
@@ -369,6 +377,13 @@ let upgradeElevenPurchased=0;
 let upgradeTwelvePriceNumber = 50000;
 let upgradeTwelvePurchased=0;
 
+//Upgrade Thirteen Variables-King Midas' Touch
+let upgradeThirteenPriceNumber = 100000;
+let upgradeThirteenPurchased=0;
+
+//Upgrade Thirteen Upgrade Activator
+let KingMidasTouch = false;
+
 //Autoclicker Management
 let autoCPS=0;
 let autoclickTimer = null;
@@ -377,7 +392,7 @@ let autoclickStarted = false;
 
 //Developer Mode
 let isInDevMode = false;
-let devPassword = "ccdev";
+let devPassword = "cc123";
 let devModeStep = 0; // 0 = ask password, 1 = ask cookie count
 
 function startGame(){
@@ -482,12 +497,26 @@ function doubleTapNoti(){
         showNotification('Lucky click! Double tap was activated!')
 }
 
-function doubleTap(){
-    if (DoubleTap == true && Math.random() < 0.0125 ){
+function kingMidasNoti(){
+    if (soundEffectsEnabled){
+        const kmSound = document.getElementById("kingMidasSFX");
+        kmSound.pause();
+        kmSound.currentTime = 0;
+        kmSound.volume = 1;
+        kmSound.play();
+    }
+        showNotification("King Midas' Touch activated! Your click turned to gold!")
+}
+
+function doubleTap() {
+    // Always start with base value
+    cookiesOnClick = cookieMultiplier;
+    if (DoubleTap === true && Math.random() < 0.0125) {
         cookiesOnClick = cookieMultiplier * 2;
-        doubleTapNoti()
-    } else {
-        cookiesOnClick = cookieMultiplier;
+        doubleTapNoti();
+    } else if (KingMidasTouch === true && Math.random() < 0.006) {
+        kingMidasNoti();
+        cookiesOnClick = cookieMultiplier + 50000;
     }
 }
 
@@ -651,6 +680,18 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
         document.getElementById('upgradeTwelvePrice').style.color = "red";
         hasSeenUpgradeTwelveNotice = false;
     }
+
+    //King Midas' Touch
+    if (cookies>=upgradeThirteenPriceNumber && upgradesUnlocked>=12 && upgradeThirteenPurchased==0){
+        document.getElementById('upgradeThirteenPrice').style.color = "green"
+        if (hasSeenupgradeThirteenNotice == false){
+            notification("You can now afford King Midas' Touch!")
+            hasSeenupgradeThirteenNotice = true;
+        }
+}else{
+        document.getElementById('upgradeThirteenPrice').style.color = "red";
+        hasSeenupgradeThirteenNotice = false;
+}
 }
 
 function showNotification(message) {
@@ -933,12 +974,29 @@ function upgradeBought(upgrade){
     }else {
         error('Not enough cookies to purchase this upgrade!')
     }
+}else if (upgrade == "thirteen"){
+    if (cookies >= upgradeThirteenPriceNumber && upgradesUnlocked>=11 && KingMidasTouch==false){
+        cookies-=upgradeThirteenPriceNumber;
+        cookiesSpent += upgradeThirteenPriceNumber;
+        KingMidasTouch = true;
+        upgradesPurchased +=1;
+        document.getElementById('upgradeThirteenPurchasedP').textContent = `Purchased: 1`
+        document.getElementById('buyButtonUpgradeThirteen').style.color = "lightgrey"
+        showNotification("You have successfully purchased King Midas' Touch!")
+        upgradeBoughtSFXPlay()
+    }else if (upgradesUnlocked<11){
+        error('Purchase Assembly Line to unlock this upgrade!')
+    }else if (KingMidasTouch==true){
+        error('You can only buy this upgrade once!')
+    }else{
+        error('Not enough cookies to purchase this upgrade!')
+    }
 }
-
 statsTextChanger();
 changeCookieCount();
 
 }
+    
 function unlockAnotherOne(){
         if (upgradesUnlocked == 4){
             upgradesUnlocked+=1;
@@ -1001,10 +1059,11 @@ function unlockGambling(){
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
-        //Shows Cookie Punch, Cookie Farm, and Assembly Line
+        //Shows Cookie Punch, Cookie Farm, Assembly Line, and King Midas' Touch
         document.getElementById('upgradeTenContainer').style.display = "block";
         document.getElementById('upgradeElevenContainer').style.display = "block";
         document.getElementById('upgradeTwelveContainer').style.display = "block";
+        document.getElementById('upgradeThirteenContainer').style.display = "block";
         /*notification('You have unlocked the upgrade Legal Gambling!') Hidden due to it not working*/
         notification('You have unlocked the upgrade Super Crunch!')
         notification('You have unlocked the upgrade Mega Oven!')
@@ -1042,9 +1101,11 @@ function unlockPunch(){
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
+        upgradesUnlocked+=1;
         notification('You have unlocked the upgrade Cookie Punch!')
         notification('You have unlocked the upgrade Cookie Farm!')
         notification('You have unlocked the upgrade Assembly Line!')
+        notification('You have unlocked the upgrade King Midas\' Touch!')
 
         //Cookie Punch Changer
         document.getElementById('upgradeTenTitle').textContent = "Cookie Punch👊🍪"
@@ -1066,6 +1127,13 @@ function unlockPunch(){
         document.getElementById('upgradeTwelvePrice').textContent = "Price: 50000 Cookies"
         document.getElementById('buyButtonUpgradeTwelve').textContent = "BUY"
         document.getElementById('buyButtonUpgradeTwelve').style.color = "black"
+
+        //King Midas' Touch Changer
+        document.getElementById('upgradeThirteenTitle').textContent = "King Midas' Touch👑✨"
+        document.getElementById('descriptionThirteen').textContent = "Develop King Midas' Golden Touch! One in every thousand click will give you 50,000 cookies plus what you would normally get! Can only be purchased once."
+        document.getElementById('upgradeThirteenPrice').textContent = "Price: 100000 Cookies"
+        document.getElementById('buyButtonUpgradeThirteen').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeThirteen').style.color = "black"
 
         statsTextChanger();
     }

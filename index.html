@@ -641,7 +641,7 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
     }
 
     //Assembly Line
-    if (cookies>=upgradeTwelvePriceNumber && upgradesUnlocked>=11){
+    if (cookies>=upgradeTwelvePriceNumber && upgradesUnlocked>=11 && upgradeTwelvePurchased==0){
         document.getElementById('upgradeTwelvePrice').style.color = "green"
         if (hasSeenUpgradeTwelveNotice == false){
             notification('You can now afford Assembly Line!')

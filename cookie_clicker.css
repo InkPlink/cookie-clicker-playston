@@ -917,3 +917,14 @@ body {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* All shop buy buttons behave like tap-only buttons */
+#shopArea button,
+#sideButtons button,
+#settingsScreen button,
+#menuScreen button {
+  touch-action: manipulation;          /* no double-tap zoom */
+  -webkit-tap-highlight-color: transparent; /* no gray highlight */
+  -webkit-user-select: none;           /* can't long-press to select text */
+  user-select: none;
+}

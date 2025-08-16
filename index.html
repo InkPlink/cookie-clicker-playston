@@ -3,29 +3,9 @@
 <html lang="en">
     
 <head>
-        <title>Cookie Clicker!</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-        <link rel="stylesheet" href="cookie_clicker.css">
-        <style>
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-            }
-            #desktopCanvas {
-                width: 1280px;
-                margin: 0 auto;
-                transform-origin: top left;
-            }
-            @media (max-width: 900px) {
-                #desktopCanvas {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                }
-            }
-        </style>
+    <title>Cookie Clicker!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <link rel="stylesheet" href="cookie_clicker.css">
 
 </head>
 
@@ -90,8 +70,8 @@
 
   <div id="devModePopup" class="popUpInCenter hidden">
     <button id="closeDevModePopupButton" onclick="toggleDevModePopup('close')">❌</button>
-    <h3>Enter password to access Dev Mode.</h3>
-    <input id="devPasswordBox" type="text">
+    <h3 id="devText">Enter password to access Dev Mode.</h3>
+    <input id="devPasswordBox">
     <button id="buttonSubmitPasswordDev" onclick="enterDevPassword()">Submit Password</button>
   </div>
 
@@ -105,6 +85,7 @@
     <button id="statsButton" onclick="toggleStats('open')">STATS📊</button>
     <button id="achievementButton" onclick="toggleAchievements('open')">ACHIEVEMENTS🏆</button>
     <button id="returnToMenuButton" onclick="returnToMainMenu()">RETURN TO MAIN MENU</button>
+    <button id="devModeIndicator" style="display: none; background-color: orange; color: black; font-weight: bold; border: 2px solid black; pointer-events: none;">DEV MODE ENABLED</button>
 </div>
 
         <div id="statsArea" class="popUpInCenter hidden">
@@ -397,6 +378,7 @@ let autoclickStarted = false;
 //Developer Mode
 let isInDevMode = false;
 let devPassword = "ccdev";
+let devModeStep = 0; // 0 = ask password, 1 = ask cookie count
 
 function startGame(){
     hideAllScreens();
@@ -501,7 +483,7 @@ function doubleTapNoti(){
 }
 
 function doubleTap(){
-    if (DoubleTap == true && Math.random() < 0.0256789 ){
+    if (DoubleTap == true && Math.random() < 0.0125 ){
         cookiesOnClick = cookieMultiplier * 2;
         doubleTapNoti()
     } else {
@@ -1184,23 +1166,38 @@ function toggleMusic(){
     }
 }
 
-function enterDevPassword(){
-    userGuess = document.getElementById('devPasswordBox').value.trim().toLowerCase();
-    if (userGuess === devPassword){
-        isInDevMode = true;
-        hideAllScreens();
-        document.getElementById('devModePopup').classList.add('hidden');
-        document.getElementById('devPasswordBox').value = '';
-        document.getElementById('menuScreen').style.display = 'block';
-        userGuess = '';
-        alert('Dev Mode activated!');
-        cookies += 1000000000;
-        document.getElementById('devModeToggle').checked = false; // Always uncheck after activation
-    }else{
-        alert('Incorrect password. Try again.');
-        document.getElementById('devPasswordBox').value = '';
-        userGuess = '';
-        document.getElementById('devModeToggle').checked = true; // Keep checked if wrong
+function enterDevPassword() {
+    const inputBox = document.getElementById('devPasswordBox');
+    let inputValue = inputBox.value.trim();
+    if (devModeStep === 0) {
+        if (inputValue.toLowerCase() === devPassword) {
+            isInDevMode = true;
+            inputBox.value = '';
+            document.getElementById('devText').textContent = 'Enter desired cookie count.';
+            devModeStep = 1;
+        } else {
+            alert('Incorrect password. Try again.');
+            inputBox.value = '';
+            document.getElementById('devModeToggle').checked = true; // Keep checked if wrong
+        }
+    } else if (devModeStep === 1) {
+        let cookieDevInput = parseInt(inputValue, 10);
+        if (!isNaN(cookieDevInput) && cookieDevInput > 0) {
+            cookies += cookieDevInput;
+            changeCookieCount();
+            alert(`Added ${cookieDevInput} cookies!`);
+            inputBox.value = '';
+            devModeStep = 0;
+            // Hide popup and return to main menu
+            document.getElementById('devModePopup').classList.add('hidden');
+            hideAllScreens();
+            document.getElementById('menuScreen').style.display = 'block';
+            document.getElementById('devText').textContent = 'Enter password to access Dev Mode.';
+            document.getElementById('devModeIndicator').style.display = 'block';
+        } else {
+            alert('Please enter a valid number.');
+            inputBox.value = '';
+        }
     }
 }
 
@@ -1285,23 +1282,7 @@ function playMenuMusic(){
   })();
 </script>
 <script>
-// Responsive scaling for iPhone/mobile
-function applyScale() {
-    var canvas = document.getElementById('desktopCanvas');
-    if (!canvas) return;
-    var ww = window.innerWidth;
-    var wh = window.innerHeight;
-    var scale = Math.min(ww / 1280, wh / 720); // 1280x720 is your design size
-    // Prevent upscaling on desktop
-    if (scale > 1) scale = 1;
-    canvas.style.transform = 'scale(' + scale + ')';
-    // Set height so content isn't cut off
-    canvas.style.height = (720 * scale) + 'px';
-    canvas.style.width = (1280 * scale) + 'px';
-}
-window.addEventListener('resize', applyScale);
-window.addEventListener('orientationchange', applyScale);
-document.addEventListener('DOMContentLoaded', applyScale);
+// Remove scaling script: use pure CSS for layout
 </script>
 </body>
 </html>

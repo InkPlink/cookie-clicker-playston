@@ -95,6 +95,7 @@
             <ul> <!--General Stats-->
                 <li>Clicks: <span id="cookiesClickedStat">0</span></li>
                 <li>Cookies Gained (All Time): <span id="cookiesGainedStat">0</span></li>
+                <li>Time Played: <span id="timePlayedStat">00:00:00</span></li>
             </ul>
             <hr>
             <ul> <!--Cookies Being Gained Stats-->
@@ -111,6 +112,10 @@
             <ul> <!--Autoclicker Stats-->
                 <li>Cookies Gained from Clicking: <span id="cookiesGainedClickingStat">0</span></li>
                 <li>Cookies Gained Passively: <span id="cookiesGainedPassivelyStat">0</span></li>
+            </ul>
+            <hr>
+            <ul> <!--More Soon-->
+                <h3>MORE STATS COMING SOON!</h3>
             </ul>
         </div>
 
@@ -295,6 +300,10 @@ let upgradesUnlocked=2;
 let cookiesOnClick;
 let musicStarted = false;
 
+// Time Played Stat
+let playSeconds = 0;
+let playTimer = null;
+
 //Math Variables
 let tempNumberOne;
 let tempNumberTwo;
@@ -413,12 +422,22 @@ function startGame(){
     changeCookieCount();
     statsTextChanger();
     priceTextColorChangers();
+
+    // Start play timer if not already started
+    if (!playTimer) {
+        playTimer = setInterval(function() {
+            playSeconds++;
+            updateTimePlayedStat();
+        }, 1000);
+    }
 }
 
 function hideAllScreens() {
   document.getElementById('menuScreen').style.display = 'none';
   document.getElementById('settingsScreen').style.display = 'none';
   document.getElementById('game-layout').style.display = 'none';
+    // Optionally pause timer when not in game (comment out if you want total app time)
+    // if (playTimer) { clearInterval(playTimer); playTimer = null; }
 }
 
 function openSettings() {
@@ -1223,6 +1242,19 @@ function statsTextChanger(){
     document.getElementById('cookiesSpentStat').textContent = cookiesSpent.toLocaleString();
     document.getElementById('cookiesGainedClickingStat').textContent = cookiesGainedClicking.toLocaleString();
     document.getElementById('cookiesGainedPassivelyStat').textContent = cookiesGainedPassively.toLocaleString();
+    updateTimePlayedStat();
+}
+
+function updateTimePlayedStat() {
+    let sec = playSeconds % 60;
+    let min = Math.floor(playSeconds / 60) % 60;
+    let hr = Math.floor(playSeconds / 3600);
+    let timeStr =
+        (hr < 10 ? '0' : '') + hr + ':' +
+        (min < 10 ? '0' : '') + min + ':' +
+        (sec < 10 ? '0' : '') + sec;
+    let el = document.getElementById('timePlayedStat');
+    if (el) el.textContent = timeStr;
 }
 
 function toggleMusic(){

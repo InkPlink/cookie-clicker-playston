@@ -1018,7 +1018,7 @@ function reload(){
 }
 
 function playMenuMusic(){
-    if (musicEnabled){
+    if (musicEnabled && !menuMusic.playing){
     menuMusic.volume = 1;
     menuMusic.play();
     }
@@ -1027,3 +1027,4 @@ function playMenuMusic(){
 </script>
 </body>
 </html>
+

@@ -115,7 +115,10 @@
             </ul>
             <hr>
             <ul> <!--More Soon-->
-                <h3>MORE STATS COMING SOON!</h3>
+                <li>Cookies gained from Double Taps: <span id="cookiesGainedFromDoubleTapsStat">0</span></li>
+                <li>Double Taps landed: <span id="doubleTapsLandedStat">0</span></li>
+                <li>Cookies gained from King Midas' Golden Touch: <span id="cookiesGainedFromKingMidasStat"></span></li>
+                <li>King Midas' Golden Touch Landed: <span id="kingMidasLandedStat"></span></li>
             </ul>
         </div>
 
@@ -287,6 +290,16 @@
                     <p id="upgradeFifteenPurchasedP">Purchased: 0</p>
                 </div>
                 <button id="buyButtonUpgradeFifteen" onclick="upgradeBought('fifteen')">🚫</button>
+                </li>
+                <li id="upgradeSixteenContainer" style="display: none;"> <!--King Midas Bonus-->
+                    <h3 id="upgradeSixteenTitle">🔒🔒🔒</h3>
+                    <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionSixteen">❔❔❔❔❔</p>
+                    <div class="priceRow">
+                        <p style="color: red;" id="upgradeSixteenPrice">Price: ❓❓❓❓❓❓ Cookies</p>
+                        <p id="upgradeSixteenPurchasedP">Purchased: 0</p>
+                        </div>
+                    <button id="buyButtonUpgradeSixteen" onclick="upgradeBought('sixteen')">🚫</button>
+                </li>
         </ul>
     </div>
 </div>
@@ -333,6 +346,10 @@ let upgradesPurchased = 0;
 let cookiesSpent = 0;
 let cookiesGainedClicking = 0;
 let cookiesGainedPassively = 0;
+let cookiesGainedFromDoubleTaps = 0;
+let doubleTapsLanded = 0;
+let cookiesGainedFromKingMidas = 0;
+let kingMidasLanded = 0;
 
 //Music and Sound Effects
 let musicEnabled = true;
@@ -365,6 +382,7 @@ let hasSeenUpgradeTwelveNotice = false;
 let hasSeenupgradeThirteenNotice = false;
 let hasSeenUpgradeFourteenNotice = false;
 let hasSeenUpgradeFifteenNotice = false;
+let hasSeenUpgradeSixteenNotice = false;
 
 //Upgrade Three Variables-Autoclick
 let upgradeThreePriceNumber=200;
@@ -410,8 +428,10 @@ let upgradeTwelvePurchased=0;
 let upgradeThirteenPriceNumber = 50000;
 let upgradeThirteenPurchased=0;
 
-//Upgrade Thirteen Upgrade Activator
+//Upgrade Thirteen Upgrade Activator Variables
 let KingMidasTouch = false;
+let kingMidasBonus = 50000;
+let kingMidasChance = 0.0011;
 
 //Upgrade Fourteen Variables-Cookie Crusher
 let upgradeFourteenPriceNumber = 100000;
@@ -420,6 +440,10 @@ let upgradeFourteenPurchased=0;
 //Upgrade Fifteen Variables-Three-Peat
 let upgradeFifteenPriceNumber = 100000;
 let upgradeFifteenPurchased=0;
+
+//Upgrade Sixteen Variables-King Midas Bonus
+let upgradeSixteenPriceNumber = 200000;
+let upgradeSixteenPurchased=0;
 
 
 let autoCPS=0;
@@ -560,10 +584,14 @@ function doubleTap() {
     cookiesOnClick = cookieMultiplier;
     if (DoubleTap === true && Math.random() < 0.01) {
         cookiesOnClick = cookieMultiplier * 2;
+        cookiesGainedFromDoubleTaps += cookiesOnClick / 2;
+        doubleTapsLanded += 1;
         doubleTapNoti();
-    } else if (KingMidasTouch === true && Math.random() < 0.0012) {
+    } else if (KingMidasTouch === true && Math.random() < kingMidasChance) {
         kingMidasNoti();
-        cookiesOnClick = cookieMultiplier + 50000;
+        cookiesOnClick = cookieMultiplier + kingMidasBonus;
+        cookiesGainedFromKingMidas += kingMidasBonus;
+        kingMidasLanded += 1;
     }
 }
 
@@ -762,6 +790,18 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
 }else{
         document.getElementById('upgradeFifteenPrice').style.color = "red";
         hasSeenUpgradeFifteenNotice = false;
+    }
+
+    //King Midas' Touch Boost
+    if (cookies>=upgradeSixteenPriceNumber && upgradesUnlocked>=14 && upgradeSixteenPurchased == 0 && KingMidasTouch == true){
+        document.getElementById('upgradeFifteenPrice').style.color = "green"
+        if (hasSeenUpgradeSixteenNotice == false){
+            notification("You can now afford King Midas' Touch Boost!")
+            hasSeenUpgradeSixteenNotice = true;
+        }
+    }else{
+        document.getElementById('upgradeSixteenPrice').style.color = "red";
+        hasSeenUpgradeSixteenNotice = false;
     }
 }
 
@@ -1052,8 +1092,10 @@ function upgradeBought(upgrade){
         cookies-=upgradeThirteenPriceNumber;
         cookiesSpent += upgradeThirteenPriceNumber;
         KingMidasTouch = true;
+        upgradeThirteenPurchased+=1;
         upgradesPurchased +=1;
         unlockCookieCrusher()
+        kingMidasBoostUnlock()
         document.getElementById('upgradeThirteenPurchasedP').textContent = `Purchased: 1`
         document.getElementById('buyButtonUpgradeThirteen').style.color = "lightgrey"
         showNotification("You have successfully purchased King Midas' Touch!")
@@ -1094,40 +1136,31 @@ function upgradeBought(upgrade){
         //One to Every Upgrade Purchased So Far
         //+1 Click
         cookieMultiplier+=1;
-        console.log("Three-Peat-+1 Click Unlocked");
 
         //Autoclick
         autoCPS+=1;
-        console.log("Three-Peat-Autoclick Unlocked");
         
         //Grandma's Help
         cookieMultiplier+=2;
-        console.log("Three-Peat-Grandma's Help Unlocked");
 
         //Oven Boost
         autoCPS+=5;
-        console.log("Three-Peat-Oven Boost Unlocked");
 
         //Super Crunch 
         cookieMultiplier+=10;
-        console.log("Three-Peat-Super Crunch Unlocked");
 
         //Mega Oven
         autoCPS+=10;
-        console.log("Three-Peat-Mega Oven Unlocked");
 
         //Cookie Punch
         cookieMultiplier+=25;
-        console.log("Three-Peat-Cookie Punch Unlocked");
 
         //Cookie Farm
         autoCPS+=50;
-        console.log("Three-Peat-Cookie Farm Unlocked");
 
         //Cookie Crusher
         cookieMultiplier+=200;
         autoCPS+=100;
-        console.log("Three-Peat-Cookie Crusher Unlocked");
 
         autoclick();
         upgradeFifteenPurchased+=1;
@@ -1146,11 +1179,33 @@ function upgradeBought(upgrade){
     }else{
         error('Not enough cookies to purchase this upgrade!')
 }
+}else if (upgrade == "sixteen"){
+    if (cookies >= upgradeSixteenPriceNumber && upgradeSixteenPurchased==0 && KingMidasTouch==true){
+        cookies-=upgradeSixteenPriceNumber;
+        cookiesSpent += upgradeSixteenPriceNumber;
+        kingMidasBonus=100000;
+        kingMidasChance=0.0022;
+        upgradeSixteenPurchased+=1;
+        upgradesPurchased +=1;
+        document.getElementById('upgradeSixteenPurchasedP').textContent = `Purchased: ${upgradeSixteenPurchased}`
+        document.getElementById('buyButtonUpgradeSixteen').style.color = "lightgrey"
+        showNotification("You have successfully purchased King Midas' Bonus!")
+        upgradeBoughtSFXPlay()
+        statsTextChanger();
+        changeCookieCount();
+}else if (KingMidasTouch==false){
+        error('Purchase King Midas\' Touch to unlock this upgrade!')
+    }else if (upgradeSixteenPurchased>=1){
+        error('You can only buy this upgrade once!')
+    }else{
+        error('Not enough cookies to purchase this upgrade!')
+    }
 }
+
         statsTextChanger();
         changeCookieCount();
 }
-    
+
 function unlockAnotherOne(){
         if (upgradesUnlocked == 4){
             upgradesUnlocked+=1;
@@ -1259,6 +1314,7 @@ function unlockPunch(){
         //Shows Cookie Crusher and Three-Peat
         document.getElementById('upgradeFourteenContainer').style.display = "block";
         document.getElementById('upgradeFifteenContainer').style.display = "block";
+        document.getElementById('upgradeSixteenContainer').style.display = "block";
         notification('You have unlocked the upgrade Cookie Punch!')
         notification('You have unlocked the upgrade Cookie Farm!')
         notification('You have unlocked the upgrade Assembly Line!')
@@ -1349,13 +1405,27 @@ music2.addEventListener('ended', () => {
     playMusicLooping();
 });
 
+function kingMidasBoostUnlock(){
+    if (KingMidasTouch == true){
+        upgradesUnlocked+=1;
+        notification("You have unlocked King Midas' Boost!")
+        document.getElementById('upgradeSixteenTitle').textContent = "King Midas' Boost👑💫"
+        document.getElementById('upgradeSixteenContainer').style.display = "block";
+        document.getElementById('descriptionSixteen').textContent = "Boost up King Midas' Golden Touch! Instead of 50,000 cookies and one in every thousand clicks, you now get 100,000 cookies and one in every five hundred clicks! Can only be purchased once."
+        document.getElementById('upgradeSixteenPrice').textContent = "Price: 200000 Cookies"
+        document.getElementById('buyButtonUpgradeSixteen').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeSixteen').style.color = "black"
+        statsTextChanger();
+    }
+}
+
 
 
 function doAutoclick() {
   if (autoCPS > 0) {
     cookies += autoCPS;
-    cookiesGainedAllTime         += autoCPS;
-    cookiesGainedPassively       += autoCPS;
+    cookiesGainedAllTime += autoCPS;
+    cookiesGainedPassively += autoCPS;
     statsTextChanger();
     changeCookieCount();
   }
@@ -1406,6 +1476,10 @@ function statsTextChanger(){
     document.getElementById('cookiesSpentStat').textContent = cookiesSpent.toLocaleString();
     document.getElementById('cookiesGainedClickingStat').textContent = cookiesGainedClicking.toLocaleString();
     document.getElementById('cookiesGainedPassivelyStat').textContent = cookiesGainedPassively.toLocaleString();
+    document.getElementById('cookiesGainedFromDoubleTapsStat').textContent = cookiesGainedFromDoubleTaps.toLocaleString();
+    document.getElementById('doubleTapsLandedStat').textContent = doubleTapsLanded.toLocaleString();
+    document.getElementById('cookiesGainedFromKingMidasStat').textContent = cookiesGainedFromKingMidas.toLocaleString();
+    document.getElementById('kingMidasLandedStat').textContent = kingMidasLanded.toLocaleString();
     updateTimePlayedStat();
 }
 
@@ -1478,6 +1552,9 @@ function unlockAllUpgrades(){
     unlockPunch();
     upgradesUnlocked = 12;
     unlockCookieCrusher();
+    upgradesUnlocked = 16;    
+    
+    statsTextChanger();
 }
 
 function toggleSoundEffects(){
@@ -1530,11 +1607,12 @@ function reload(){
 }
 
 function playMenuMusic(){
-    if (musicEnabled && !menuMusic.playing){
-    menuMusic.volume = 1;
-    menuMusic.play();
-    }
+    if (musicEnabled && menuMusic.paused){
+     menuMusic.volume = 1;
+     menuMusic.play();
+  }
 }
+
 
   (function () {
     const BASE_WIDTH = 1280; // must match #desktopCanvas width

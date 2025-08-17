@@ -180,17 +180,7 @@
                 </div>
                 <button id="buyButtonUpgradeThree" style="color: lightgrey" onclick="upgradeBought('three')">🚫</button>
             </li>
-            <li id="upgradeFiveContainer" style="display: none;"> <!--Another One!-->
-                <h3 id="upgradeFiveTitle">🔒🔒🔒</h3>
-                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionFive">❔❔❔❔❔</p>
-
-                <div class="priceRow">
-                    <p style="color: red;" id="upgradeFivePrice">Price: ❓❓❓ Cookies</p>
-                    <p id="upgradeFivePurchasedP">Purchased: 0</p>
-                </div>
-                <button id="buyButtonUpgradeFive" onclick="upgradeBought('five')">🚫</button>
-            </li>
-            <li id="upgradeSixContainer" style="display: none;"> <!--Oven Boost-->
+            <li id="upgradeSixContainer" style="display: none;"> <!--Oven Boost-Listed as Upgrade Six-->
                 <h3 id="upgradeSixTitle">🔒🔒🔒</h3>
                 <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionSix">❔❔❔❔❔</p>
 
@@ -199,6 +189,16 @@
                     <p id="upgradeSixPurchasedP">Purchased: 0</p>
                 </div>
                 <button id="buyButtonUpgradeSix" onclick="upgradeBought('six')">🚫</button>
+            </li>
+            <li id="upgradeFiveContainer" style="display: none;"> <!--Another One!-Listed as Upgrade Five-->
+                <h3 id="upgradeFiveTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionFive">❔❔❔❔❔</p>
+
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeFivePrice">Price: ❓❓❓ Cookies</p>
+                    <p id="upgradeFivePurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeFive" onclick="upgradeBought('five')">🚫</button>
             </li>
             <li id="upgradeSevenContainer" style="display: none;"> <!--Legal Gambling-->
                 <h3 id="upgradeSevenTitle">🔒🔒🔒</h3>
@@ -269,6 +269,24 @@
                     <p id="upgradeThirteenPurchasedP">Purchased: 0</p>
                 </div>
                 <button id="buyButtonUpgradeThirteen" onclick="upgradeBought('thirteen')">🚫</button>
+                </li>
+                <li id="upgradeFourteenContainer" style="display: none;"> <!--Cookie Crusher-->
+                <h3 id="upgradeFourteenTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionFourteen">❔❔❔❔❔</p>
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeFourteenPrice">Price: ❓❓❓❓❓❓ Cookies</p>
+                    <p id="upgradeFourteenPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeFourteen" onclick="upgradeBought('fourteen')">🚫</button>
+            </li>
+            <li id="upgradeFifteenContainer" style="display: none;"> <!--Three-Peat-->
+                <h3 id="upgradeFifteenTitle">🔒🔒🔒</h3>
+                <p class="descriptionUpgrade" style="font-size: medium;" id="descriptionFifteen">❔❔❔❔❔</p>
+                <div class="priceRow">
+                    <p style="color: red;" id="upgradeFifteenPrice">Price: ❓❓❓❓❓❓ Cookies</p>
+                    <p id="upgradeFifteenPurchasedP">Purchased: 0</p>
+                </div>
+                <button id="buyButtonUpgradeFifteen" onclick="upgradeBought('fifteen')">🚫</button>
         </ul>
     </div>
 </div>
@@ -345,6 +363,8 @@ let hasSeenUpgradeTenNotice = false;
 let hasSeenUpgradeElevenNotice = false;
 let hasSeenUpgradeTwelveNotice = false;
 let hasSeenupgradeThirteenNotice = false;
+let hasSeenUpgradeFourteenNotice = false;
+let hasSeenUpgradeFifteenNotice = false;
 
 //Upgrade Three Variables-Autoclick
 let upgradeThreePriceNumber=200;
@@ -355,7 +375,7 @@ let upgradeFourPriceNumber=100;
 let upgradeFourPurchased=0;
 
 //Upgrade Five Variables-Another One
-let upgradeFivePriceNumber=250;
+let upgradeFivePriceNumber=500;
 let upgradeFivePurchased=0;
 
 //Upgrade Six Variables-Oven Boost
@@ -393,7 +413,15 @@ let upgradeThirteenPurchased=0;
 //Upgrade Thirteen Upgrade Activator
 let KingMidasTouch = false;
 
-//Autoclicker Management
+//Upgrade Fourteen Variables-Cookie Crusher
+let upgradeFourteenPriceNumber = 100000;
+let upgradeFourteenPurchased=0;
+
+//Upgrade Fifteen Variables-Three-Peat
+let upgradeFifteenPriceNumber = 100000;
+let upgradeFifteenPurchased=0;
+
+
 let autoCPS=0;
 let autoclickTimer = null;
 let autoclickInterval = 1000;
@@ -530,10 +558,10 @@ function kingMidasNoti(){
 function doubleTap() {
     // Always start with base value
     cookiesOnClick = cookieMultiplier;
-    if (DoubleTap === true && Math.random() < 0.0125) {
+    if (DoubleTap === true && Math.random() < 0.01) {
         cookiesOnClick = cookieMultiplier * 2;
         doubleTapNoti();
-    } else if (KingMidasTouch === true && Math.random() < 0.001) {
+    } else if (KingMidasTouch === true && Math.random() < 0.0012) {
         kingMidasNoti();
         cookiesOnClick = cookieMultiplier + 50000;
     }
@@ -711,6 +739,30 @@ function priceTextColorChangers(){ //Called from the "Change Cookie Count" funct
         document.getElementById('upgradeThirteenPrice').style.color = "red";
         hasSeenupgradeThirteenNotice = false;
 }
+
+    //Cookie Crusher
+    if (cookies>=upgradeFourteenPriceNumber && upgradesUnlocked>=13){
+        document.getElementById('upgradeFourteenPrice').style.color = "green"
+        if (hasSeenUpgradeFourteenNotice == false){
+            notification('You can now afford Cookie Crusher!')
+            hasSeenUpgradeFourteenNotice = true;
+        }
+}else{
+        document.getElementById('upgradeFourteenPrice').style.color = "red";
+        hasSeenUpgradeFourteenNotice = false;
+    }
+
+    //Three-Peat
+    if (cookies>=upgradeFifteenPriceNumber && upgradesUnlocked>=14 && upgradeFifteenPurchased==0){
+        document.getElementById('upgradeFifteenPrice').style.color = "green"
+        if (hasSeenUpgradeFifteenNotice == false){
+            notification('You can now afford Three-Peat!')
+            hasSeenUpgradeFifteenNotice = true;
+        }
+}else{
+        document.getElementById('upgradeFifteenPrice').style.color = "red";
+        hasSeenUpgradeFifteenNotice = false;
+    }
 }
 
 function showNotification(message) {
@@ -839,16 +891,14 @@ function upgradeBought(upgrade){
         document.getElementById('upgradeFivePurchasedP').textContent = `Purchased: 1`;
 
         // +1 to each upgrade
-        upgradeOnePurchased += 1;
-        cookieMultiplier += 1;
-        document.getElementById('upgradeOnePurchasedP').textContent = `Purchased: ${upgradeOnePurchased}`
+        cookieMultiplier += 3;
 
-        upgradeThreePurchased += 1;
         autoCPS += 1;
         autoclick();
-        document.getElementById('upgradeThreePurchasedP').textContent = `Purchased: ${upgradeThreePurchased}`
 
-        upgradeFourPurchased += 1;
+        autoCPS += 5;
+        autoclick();
+
         cookieMultiplier += 2;
         document.getElementById('upgradeFourPurchasedP').textContent = `Purchased: ${upgradeFourPurchased}`
         unlockGambling()
@@ -947,6 +997,7 @@ function upgradeBought(upgrade){
         cookieMultiplier+=25;
         upgradeTenPurchased+=1;
         upgradesPurchased +=1;
+        unlockCookieCrusher()
         document.getElementById('upgradeTenPrice').textContent = `Price: ${upgradeTenPriceNumber.toLocaleString()} Cookies`;
         document.getElementById('upgradeTenPurchasedP').textContent = `Purchased: ${upgradeTenPurchased}`
         showNotification('You have successfully purchased Cookie Punch!')
@@ -966,6 +1017,7 @@ function upgradeBought(upgrade){
             autoCPS+=50;
             upgradeElevenPurchased+=1;
             upgradesPurchased +=1;
+            unlockCookieCrusher()
             document.getElementById('upgradeElevenPrice').textContent = `Price: ${upgradeElevenPriceNumber.toLocaleString()} Cookies`;
             document.getElementById('upgradeElevenPurchasedP').textContent = `Purchased: ${upgradeElevenPurchased}`
             showNotification('You have successfully purchased Cookie Farm!')
@@ -984,6 +1036,7 @@ function upgradeBought(upgrade){
         document.getElementById('buyButtonUpgradeTwelve').style.color = "lightgrey";
         document.getElementById('upgradeTwelvePurchasedP').textContent = `Purchased: 1`;
         applyAssemblyLineUpgrade();
+        unlockCookieCrusher()
         showNotification('You have successfully purchased Assembly Line!');
         upgradeBoughtSFXPlay();
         changeCookieCount();
@@ -1000,6 +1053,7 @@ function upgradeBought(upgrade){
         cookiesSpent += upgradeThirteenPriceNumber;
         KingMidasTouch = true;
         upgradesPurchased +=1;
+        unlockCookieCrusher()
         document.getElementById('upgradeThirteenPurchasedP').textContent = `Purchased: 1`
         document.getElementById('buyButtonUpgradeThirteen').style.color = "lightgrey"
         showNotification("You have successfully purchased King Midas' Touch!")
@@ -1011,10 +1065,90 @@ function upgradeBought(upgrade){
     }else{
         error('Not enough cookies to purchase this upgrade!')
     }
+}else if (upgrade == "fourteen"){
+    if (cookies >= upgradeFourteenPriceNumber && upgradesUnlocked>=12){
+        cookies-=upgradeFourteenPriceNumber;
+        cookiesSpent += upgradeFourteenPriceNumber;
+        let tempNumberOne = upgradeFourteenPriceNumber * .18;
+        upgradeFourteenPriceNumber+=tempNumberOne;
+        upgradeFourteenPriceNumber = Math.ceil(upgradeFourteenPriceNumber);
+        cookieMultiplier+=200;
+        autoCPS+=100;
+        autoclick();
+        upgradeFourteenPurchased+=1;
+        upgradesPurchased +=1;
+        document.getElementById('upgradeFourteenPrice').textContent = `Price: ${upgradeFourteenPriceNumber.toLocaleString()} Cookies`;
+        document.getElementById('upgradeFourteenPurchasedP').textContent = `Purchased: ${upgradeFourteenPurchased}`
+        showNotification('You have successfully purchased Cookie Crusher!')
+        upgradeBoughtSFXPlay()
+}else if (upgradesUnlocked<12){
+        error('Purchase Cookie Punch, Cookie Farm, Assembly Line, or King Midas\' Touch to unlock this upgrade!')
+    }else{
+        error('Not enough cookies to purchase this upgrade!')
 }
-statsTextChanger();
-changeCookieCount();
+}else if (upgrade == "fifteen"){
+    if (cookies >= upgradeFifteenPriceNumber && upgradesUnlocked>=12 && upgradeFifteenPurchased==0){
+        cookies-=upgradeFifteenPriceNumber;
+        cookiesSpent += upgradeFifteenPriceNumber;
 
+        //One to Every Upgrade Purchased So Far
+        //+1 Click
+        cookieMultiplier+=1;
+        console.log("Three-Peat-+1 Click Unlocked");
+
+        //Autoclick
+        autoCPS+=1;
+        console.log("Three-Peat-Autoclick Unlocked");
+        
+        //Grandma's Help
+        cookieMultiplier+=2;
+        console.log("Three-Peat-Grandma's Help Unlocked");
+
+        //Oven Boost
+        autoCPS+=5;
+        console.log("Three-Peat-Oven Boost Unlocked");
+
+        //Super Crunch 
+        cookieMultiplier+=10;
+        console.log("Three-Peat-Super Crunch Unlocked");
+
+        //Mega Oven
+        autoCPS+=10;
+        console.log("Three-Peat-Mega Oven Unlocked");
+
+        //Cookie Punch
+        cookieMultiplier+=25;
+        console.log("Three-Peat-Cookie Punch Unlocked");
+
+        //Cookie Farm
+        autoCPS+=50;
+        console.log("Three-Peat-Cookie Farm Unlocked");
+
+        //Cookie Crusher
+        cookieMultiplier+=200;
+        autoCPS+=100;
+        console.log("Three-Peat-Cookie Crusher Unlocked");
+
+        autoclick();
+        upgradeFifteenPurchased+=1;
+        upgradesPurchased +=1;
+        document.getElementById('upgradeFifteenPrice').textContent = `Price: ${upgradeFifteenPriceNumber.toLocaleString()} Cookies`;
+        document.getElementById('upgradeFifteenPurchasedP').textContent = `Purchased: 1`
+        document.getElementById('buyButtonUpgradeFifteen').style.color = "lightgrey"
+        showNotification('You have successfully purchased Three-Peat!')
+        upgradeBoughtSFXPlay()
+        statsTextChanger();
+        changeCookieCount();
+}else if (upgradesUnlocked<12){
+        error('Purchase Cookie Punch, Cookie Farm, Assembly Line, or King Midas\' Touch to unlock this upgrade!')
+    }else if (upgradeFifteenPurchased>=1){
+        error('You can only buy this upgrade once!')
+    }else{
+        error('Not enough cookies to purchase this upgrade!')
+}
+}
+        statsTextChanger();
+        changeCookieCount();
 }
     
 function unlockAnotherOne(){
@@ -1032,7 +1166,7 @@ function unlockAnotherOne(){
         //Another One Changer
         document.getElementById('upgradeFiveTitle').textContent = "Another One!🔁🍪"
         document.getElementById('descriptionFive').textContent = "Get 1 more of every upgrade so far (Excluding Double Tap)! It can only be purchased once."
-        document.getElementById('upgradeFivePrice').textContent = "Price: 250 Cookies"
+        document.getElementById('upgradeFivePrice').textContent = "Price: 500 Cookies"
         document.getElementById('buyButtonUpgradeFive').textContent = "BUY"
         document.getElementById('buyButtonUpgradeFive').style.color = "black"
 
@@ -1064,7 +1198,7 @@ function unlockGrandmaAuto(){
         document.getElementById('buyButtonUpgradeThree').style.color = "black"
 
         //Grandmas Help Changer
-        document.getElementById('upgradeFourTitle').textContent = "Grandmas Help 👵🍪"
+        document.getElementById('upgradeFourTitle').textContent = "Grandma's Help 👵🍪"
         document.getElementById('descriptionFour').textContent = "Grandma can help you make cookies better and faster! Gives 2 more cookies per click. Stacks!"
         document.getElementById('upgradeFourPrice').textContent = "Price: 100 Cookies"
         document.getElementById('buyButtonUpgradeFour').textContent = "BUY"
@@ -1122,6 +1256,9 @@ function unlockPunch(){
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
         upgradesUnlocked+=1;
+        //Shows Cookie Crusher and Three-Peat
+        document.getElementById('upgradeFourteenContainer').style.display = "block";
+        document.getElementById('upgradeFifteenContainer').style.display = "block";
         notification('You have unlocked the upgrade Cookie Punch!')
         notification('You have unlocked the upgrade Cookie Farm!')
         notification('You have unlocked the upgrade Assembly Line!')
@@ -1154,6 +1291,33 @@ function unlockPunch(){
         document.getElementById('upgradeThirteenPrice').textContent = "Price: 50000 Cookies"
         document.getElementById('buyButtonUpgradeThirteen').textContent = "BUY"
         document.getElementById('buyButtonUpgradeThirteen').style.color = "black"
+
+        statsTextChanger();
+    }
+}
+
+function unlockCookieCrusher(){
+    if (upgradesUnlocked == 12){
+        upgradesUnlocked+=1;
+        upgradesUnlocked+=1;
+        notification('You have unlocked the upgrade Cookie Crusher!')
+        notification('You have unlocked the upgrade Three-Peat!')
+
+        //Cookie Crusher Changer
+        document.getElementById('upgradeFourteenContainer').style.display = "block";
+        document.getElementById('upgradeFourteenTitle').textContent = "Cookie Crusher💥🍪"
+        document.getElementById('descriptionFourteen').textContent = "Crush cookies with pure power! Gain +200 cookies per click and +100 cookies per second! Stacks!"
+        document.getElementById('upgradeFourteenPrice').textContent = "Price: 100000 Cookies"
+        document.getElementById('buyButtonUpgradeFourteen').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeFourteen').style.color = "black"
+
+        //Three-Peat Changer
+        document.getElementById('upgradeFifteenContainer').style.display = "block";
+        document.getElementById('upgradeFifteenTitle').textContent = "Three-Peat🎯🍪"
+        document.getElementById('descriptionFifteen').textContent = "Get 3 more of every upgrade so far (Excluding Double Tap, Another One, Assembly Line, and King Midas' Touch)! It can only be purchased once."
+        document.getElementById('upgradeFifteenPrice').textContent = "Price: 100000 Cookies"
+        document.getElementById('buyButtonUpgradeFifteen').textContent = "BUY"
+        document.getElementById('buyButtonUpgradeFifteen').style.color = "black"
 
         statsTextChanger();
     }
@@ -1285,8 +1449,9 @@ function enterDevPassword() {
         let cookieDevInput = parseInt(inputValue, 10);
         if (!isNaN(cookieDevInput) && cookieDevInput > 0) {
             cookies += cookieDevInput;
+            unlockAllUpgrades();
             changeCookieCount();
-            alert(`Added ${cookieDevInput} cookies!`);
+            alert(`Added ${cookieDevInput} cookies and unlocked all upgrades!`);
             inputBox.value = '';
             devModeStep = 0;
             // Hide popup and return to main menu
@@ -1300,6 +1465,19 @@ function enterDevPassword() {
             inputBox.value = '';
         }
     }
+}
+
+function unlockAllUpgrades(){
+    upgradesUnlocked = 2;
+    unlockGrandmaAuto();
+    upgradesUnlocked = 4;
+    unlockAnotherOne();
+    upgradesUnlocked = 6;
+    unlockGambling();
+    upgradesUnlocked = 9;
+    unlockPunch();
+    upgradesUnlocked = 12;
+    unlockCookieCrusher();
 }
 
 function toggleSoundEffects(){
@@ -1387,4 +1565,3 @@ function playMenuMusic(){
 </script>
 </body>
 </html>
-

@@ -472,3 +472,7 @@ body {
   -webkit-user-select: none;           /* can't long-press to select text */
   user-select: none;
 }
+
+.descriptionUpgrade{
+  font-size: medium;
+}
